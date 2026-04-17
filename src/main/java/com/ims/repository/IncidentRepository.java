@@ -9,6 +9,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class IncidentRepository {
 
@@ -21,7 +22,7 @@ public class IncidentRepository {
     }
 
 
-    // Method to save the Incident into DB
+    // Save the incident into the DB
     public void save(Incident incident){
        Connection conn = dbManager.getConnection(); // Get a connection with DB
         // INSERT command
@@ -61,7 +62,7 @@ public class IncidentRepository {
 
     }
 
-    // Method to retrieve all the incident and output as list
+    // Retrieves all the Incident
     public List<Incident> findAll(){
 
         List<Incident> incidents = new ArrayList<>();
@@ -108,6 +109,54 @@ public class IncidentRepository {
         return incidents; // Second return in case some error occurs, return an empty list with the above error
 
 
+    }
+
+
+    // Returns the incident by id, or empty if not found
+    public Optional<Incident> findById(int id){
+
+        Connection conn = dbManager.getConnection();
+        String sql = "SELECT * FROM incidents where id = ?";
+
+        try {
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            stmt.setInt(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()){
+
+                Incident incident = new Incident(
+
+                        rs.getString("title"),
+                        Priority.valueOf(rs.getString("priority")),
+                        IncidentSource.valueOf(rs.getString("source"))
+                );
+
+                incident.setId(rs.getInt("id"));
+                incident.setStatus(IncidentStatus.valueOf(rs.getString("status")));
+                incident.setDescription(rs.getString("description"));
+                incident.setAssignedTo(rs.getString("assigned_to"));
+                incident.setStartDate(LocalDateTime.parse(rs.getString("start_date")));
+
+                String endDate = rs.getString("end_date");
+                if(endDate != null) {
+                    incident.setEndDate(LocalDateTime.parse(endDate));
+                }
+
+                return Optional.of(incident);
+            }
+
+            return Optional.empty(); // id not found
+
+
+        } catch (SQLException e) {
+            System.out.println("Error message finding the id : " +  e.getMessage());
+        }
+
+        return Optional.empty(); // error occurs -- empty
     }
 
 }
