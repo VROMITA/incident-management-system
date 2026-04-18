@@ -159,4 +159,44 @@ public class IncidentRepository {
         return Optional.empty(); // error occurs -- empty
     }
 
+    // Update Incident status
+    public boolean updateStatus(int id, IncidentStatus incidentStatus){
+
+        Connection conn = dbManager.getConnection();
+        String sql = "UPDATE incidents SET status = ? WHERE id = ?";
+
+        try {
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, incidentStatus.name());
+            stmt.setInt(2, id);
+
+            int rows = stmt.executeUpdate();
+            return rows >0;
+
+        }catch (SQLException e){
+            System.out.println("Error updating: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    public boolean deleteIncident(int id){
+
+        Connection conn = dbManager.getConnection();
+        String sql = "DELETE FROM incidents WHERE id = ?";
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            int rows = stmt.executeUpdate();
+            return rows >0;
+
+        }catch (SQLException e){
+            System.out.println("Error deleting ID: " + e.getMessage());
+        }
+
+        return false;
+    }
+
 }
