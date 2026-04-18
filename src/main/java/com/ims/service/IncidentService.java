@@ -45,17 +45,37 @@ public class IncidentService {
     public void closeIncident(int id){
 
         Optional<Incident> optional = repository.findById(id);
+
+        // Check if the incident does not exist
         if(optional.isEmpty()){
             throw new IllegalArgumentException("Incident not found");
         }
+
         Incident incident = optional.get();
+
+        // Check if the incident is already closed
         if (incident.getStatus() == IncidentStatus.CLOSED){
             throw new IllegalArgumentException("Incident already closed");
         }
+
+        // Change Status and Date
         incident.setStatus(IncidentStatus.CLOSED);
         incident.setEndDate(LocalDateTime.now());
-        repository.updateStatus(id, IncidentStatus.CLOSED);
+        repository.updateIncident(incident);
 
+    }
+
+    public void deleteIncident(int id){
+
+        Optional<Incident> optional = repository.findById(id);
+
+        if(optional.isEmpty()){
+            throw new IllegalArgumentException("Incident not found");
+        }
+
+        Incident incident = optional.get();
+
+        repository.deleteIncident(id);
     }
 
 

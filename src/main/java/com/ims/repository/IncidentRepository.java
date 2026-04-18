@@ -181,6 +181,39 @@ public class IncidentRepository {
         return false;
     }
 
+    public boolean updateIncident(Incident incident){
+        Connection conn = dbManager.getConnection();
+        String sql = """
+                UPDATE incidents SET title = ?, status = ?, priority = ?, source = ?,
+                description = ?, assigned_to = ?, start_date = ?, end_date = ?
+                WHERE id = ?
+                """;
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, incident.getTitle());
+            stmt.setString(2, incident.getStatus().name());
+            stmt.setString(3, incident.getPriority().name());
+            stmt.setString(4, incident.getSource().name());
+            stmt.setString(5, incident.getDescription());
+            stmt.setString(6, incident.getAssignedTo());
+            stmt.setString(7, incident.getStartDate().toString());
+            stmt.setString(8, incident.getEndDate() != null ? incident.getEndDate().toString() : null ); // Operatore ternario per fare check su End Date
+            stmt.setInt(9, incident.getId());
+
+            int rows = stmt.executeUpdate();
+            return  rows > 0;
+
+        }catch (SQLException e){
+            System.out.println("Error updating values: " + e.getMessage());
+        }
+
+        return false; // error
+
+
+    }
+
     public boolean deleteIncident(int id){
 
         Connection conn = dbManager.getConnection();
