@@ -80,5 +80,9 @@ public class IncidentService {
         repository.deleteIncident(id);
     }
 
+    public void updateIncident(Incident incident){
+        repository.updateIncident(incident);
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.ims.cli;
 
 import com.ims.model.Incident;
 import com.ims.model.IncidentSource;
+import com.ims.model.IncidentStatus;
 import com.ims.model.Priority;
 import com.ims.service.IncidentService;
 
@@ -53,7 +54,7 @@ public class IncidentCLI {
                      break;
 
                  case 5:
-                     System.out.println("Coming soon..5");
+                     updateIncident();
                      break;
 
                  case 6:
@@ -203,5 +204,207 @@ public class IncidentCLI {
 
       }
 
+    public void updateIncident() {
+
+        int updateChoiceInput;
+
+        System.out.println("Update Incident Information");
+        System.out.println("Please type an ID: ");
+        int typedInt = Integer.parseInt(scanner.nextLine());
+
+        Optional<Incident> incidents = service.getIncidentById(typedInt);
+
+        if (incidents.isPresent()) {
+
+            Incident incident = incidents.get();
+
+            System.out.println("ID " + incident.getId() + " | " + incident.getTitle());
+            System.out.println("Status: " + incident.getStatus() + " | Priority: " + incidents.get().getPriority() + " | Reported by: " + incident.getSource());
+            System.out.println("Assigned to: " + incident.getAssignedTo() + " | Start date: " + incident.getStartDate() + " | End Date: " + incident.getEndDate());
+            System.out.println("Description \n" + incident.getDescription());
+
+
+            do {
+            // Start Update Information
+
+            System.out.println("Which information do you want to update?");
+            System.out.println("1 - Title");
+            System.out.println("2 - Description");
+            System.out.println("3 - Status");
+            System.out.println("4 - Priority");
+            System.out.println("5 - Source");
+            System.out.println("6 - Assigned");
+            System.out.println("7 - Exit");
+
+            updateChoiceInput = Integer.parseInt(scanner.nextLine());
+
+            switch (updateChoiceInput){
+
+                // UPDATE TITLE
+                case 1:
+
+                    System.out.println("Update title:");
+                    String newTitle = scanner.nextLine();
+                    incident.setTitle(newTitle);
+
+                    break;
+
+                // UPDATE  DESCRIPTION
+                case 2:
+
+                    System.out.println("Update description:");
+                    String newDescription = scanner.nextLine();
+                    incident.setDescription(newDescription);
+
+                    break;
+
+                // UPDATE STATUS
+                case 3:
+
+                    System.out.println("Update status:");
+                    System.out.println("1 - ASSIGNED");
+                    System.out.println("2 - ESCALATED");
+                    System.out.println("3 - IN PROGRESS");
+                    System.out.println("4 - TESTING");
+                    System.out.println("5 - REOPENED");
+                    System.out.println("6 - Exit");
+
+                    int status;
+                    IncidentStatus selectedNewStatus = null;
+
+                    do {
+
+                        status = Integer.parseInt(scanner.nextLine());
+
+                        switch (status){
+                            case 1:
+                                selectedNewStatus = IncidentStatus.ASSIGNED;
+
+                                if (incident.getAssignedTo() == null || incident.getAssignedTo().isEmpty())
+
+                                System.out.println("PLEASE CHANGE ASSIGNED PERSON!");
+
+                                break;
+                            case 2:
+                                selectedNewStatus = IncidentStatus.ESCALATED;
+                                break;
+                            case 3:
+                                selectedNewStatus = IncidentStatus.IN_PROGRESS;
+                                break;
+                            case 4:
+                                selectedNewStatus = IncidentStatus.TESTING;
+                                break;
+                            case 5:
+                                selectedNewStatus = IncidentStatus.REOPENED;
+                                break;
+                            case 6:
+                                break;
+                            default:
+                                System.out.println("Invalid choice, try again!\n");
+
+                        }
+
+                    }while (status < 1 || status > 6);
+
+                    incident.setStatus(selectedNewStatus);
+
+                    break;
+
+                // UPDATE PRIORITY
+                case 4:
+
+                    System.out.println("Update priority:");
+                    System.out.println("1 -LOW");
+                    System.out.println("2 -MEDIUM");
+                    System.out.println("3 -HIGH");
+
+                    int priority;
+                    Priority selectedNewPriority = null;
+
+                    do {
+
+                        priority = Integer.parseInt(scanner.nextLine());
+
+                        switch (priority){
+                            case 1:
+                                selectedNewPriority = Priority.LOW;
+                                break;
+                            case 2:
+                                selectedNewPriority = Priority.MEDIUM;
+                                break;
+                            case 3:
+                                selectedNewPriority = Priority.HIGH;
+                                break;
+                            default:
+                                System.out.println("Invalid choice, try again!\n");
+
+                        }
+
+                    }while (priority < 1 || priority > 3);
+
+                    incident.setPriority(selectedNewPriority);
+
+                    break;
+
+                    // UPDATE SOURCE
+                case 5:
+
+                    System.out.println("Update source: \n");
+                    System.out.println("1 - USER_REPORT");
+                    System.out.println("2 - INTERNAL_TEAM");
+
+                    int source;
+                    IncidentSource selectedNewSource = null;
+
+                    do {
+
+                        source = Integer.parseInt(scanner.nextLine());
+
+                        switch (source){
+                            case 1:
+                                selectedNewSource = IncidentSource.USER_REPORT;
+                                break;
+                            case 2:
+                                selectedNewSource = IncidentSource.INTERNAL_TEAM;
+                                break;
+                            default:
+                                System.out.println("Invalid source, try again \n");
+                        }
+                    }while (source < 1 || source > 2);
+
+                    incident.setSource(selectedNewSource);
+
+                    break;
+
+                    // UPDATE ASSIGNED
+                case 6:
+
+                    System.out.println("Update assigned person:");
+                    String newAssigned = scanner.nextLine();
+                    incident.setAssignedTo(newAssigned);
+
+                    break;
+
+                // EXIT
+                case 7:
+
+                    break;
+
+                default:
+                    System.out.println("Invalid choice try again!");
+
+
+            }
+
+
+            service.updateIncident(incident);
+
+            }while (updateChoiceInput !=7 );
+
+
+        }else
+
+            System.out.println("No incident found");
+    }
 
 }
