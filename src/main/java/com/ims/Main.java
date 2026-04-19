@@ -6,5 +6,8 @@ public class Main {
     public static void main(String[] args) {
         DatabaseManager db = DatabaseManager.getInstance();
         db.createTable();
+
+        IncidentCLI cli = new IncidentCLI();
+        cli.start();
     }
 }
