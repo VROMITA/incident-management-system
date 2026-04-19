@@ -42,6 +42,6 @@ The project follows a layered architecture:
 ## Roadmap
 
 - **v1.0** ✅ CLI core - create, view, find, update, delete, close incidents
-- **v2.0** 🔄 SLA Monitor - track and alert on incident resolution deadlines
+- **v2.0** 🔄 SLA Monitor - track and alert on incident resolution deadlines + comments system
 - **v3.0** 📊 Reports - incident statistics and export
 - **v4.0** 🚀 Spring Boot REST API - migrate to web API with PostgreSQL
