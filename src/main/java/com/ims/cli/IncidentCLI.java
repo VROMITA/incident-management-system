@@ -49,7 +49,7 @@ public class IncidentCLI {
                      break;
 
                  case 4:
-                     System.out.println("Coming soon..4");
+                     deleteIncidentById();
                      break;
 
                  case 5:
@@ -152,7 +152,7 @@ public class IncidentCLI {
       private void findIncidentById(){
 
          int typedInt;
-
+          System.out.println("Search an incident");
           System.out.println("Please type an ID: ");
           typedInt = Integer.parseInt(scanner.nextLine());
 
@@ -173,6 +173,35 @@ public class IncidentCLI {
       }
 
 
+      private void deleteIncidentById(){
+
+         int typedInt;
+
+
+          System.out.println("Incident Deletion");
+          System.out.println("Please type an ID ");
+          typedInt = Integer.parseInt(scanner.nextLine());
+
+          Optional<Incident> incidents = service.getIncidentById(typedInt);
+
+          if (incidents.isPresent()){
+
+              Incident incident = incidents.get();
+              System.out.println("Incident: " + "[" + incident.getId() + "] | " + incident.getTitle() + " | " + incident.getStatus());
+              System.out.println("Are you sure you want to delete this incident? y/n");
+              String deletionInput = scanner.nextLine();
+
+              if(deletionInput.equals("y")){
+                  service.deleteIncident(typedInt);
+                  System.out.println("Incident " + incident.getId() + " Cancelled");
+              }else
+                  System.out.println("Deletion process cancelled");
+
+
+          }else
+              System.out.println("Incident does not exist");
+
+      }
 
 
 }
