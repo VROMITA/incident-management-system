@@ -6,6 +6,7 @@ import com.ims.model.Priority;
 import com.ims.service.IncidentService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class IncidentCLI {
@@ -44,7 +45,7 @@ public class IncidentCLI {
                      break;
 
                  case 3:
-                     System.out.println("Coming soon..3");
+                     findIncidentById();
                      break;
 
                  case 4:
@@ -139,7 +140,7 @@ public class IncidentCLI {
          System.out.println("Incident created Successfully -  ID " + created.getId());
      }
 
-      private void listAllIncidents(){
+     private void listAllIncidents(){
          List<Incident> incidents = service.allIncidents();
 
          for (Incident incident :
@@ -147,6 +148,31 @@ public class IncidentCLI {
              System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getStatus() + " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
           }
       }
+
+      private void findIncidentById(){
+
+         int typedInt;
+
+          System.out.println("Please type an ID: ");
+          typedInt = Integer.parseInt(scanner.nextLine());
+
+          Optional<Incident> incidents = service.getIncidentById(typedInt);
+
+
+          if (incidents.isPresent()){
+
+              Incident incident = incidents.get();
+
+              System.out.println("ID " + incident.getId() + " | " + incident.getTitle());
+              System.out.println("Status: " + incident.getStatus() + " | Priority: " + incidents.get().getPriority() + " | Reported by: " + incident.getSource());
+              System.out.println("Assigned to: " + incident.getAssignedTo() + " | Start date: " + incident.getStartDate() + " | End Date: " + incident.getEndDate());
+              System.out.println("Description \n" + incident.getDescription());
+
+          }else
+              System.out.println("Incident not found");
+      }
+
+
 
 
 }
