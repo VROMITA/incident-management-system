@@ -5,6 +5,7 @@ import com.ims.model.IncidentSource;
 import com.ims.model.Priority;
 import com.ims.service.IncidentService;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class IncidentCLI {
@@ -12,7 +13,7 @@ public class IncidentCLI {
      private IncidentService service = new IncidentService();
 
      public void start(){
-         System.out.println("Welcome to the Incident Management System");
+         System.out.println("Welcome to the Incident Management System\n");
          showMenu();
 
      }
@@ -39,7 +40,7 @@ public class IncidentCLI {
                      break;
 
                  case 2:
-                     System.out.println("Coming soon..2");
+                     listAllIncidents();
                      break;
 
                  case 3:
@@ -137,5 +138,15 @@ public class IncidentCLI {
 
          System.out.println("Incident created Successfully -  ID " + created.getId());
      }
+
+      private void listAllIncidents(){
+         List<Incident> incidents = service.allIncidents();
+
+         for (Incident incident :
+              incidents) {
+             System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getStatus() + " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
+          }
+      }
+
 
 }
