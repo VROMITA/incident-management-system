@@ -1,5 +1,6 @@
 package com.ims;
 
+import com.ims.cli.IncidentCLI;
 import com.ims.repository.DatabaseManager;
 
 public class Main {
