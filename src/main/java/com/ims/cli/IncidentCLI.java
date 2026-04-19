@@ -85,6 +85,7 @@ public class IncidentCLI {
          System.out.println("1 -LOW");
          System.out.println("2 -MEDIUM");
          System.out.println("3 -HIGH");
+         System.out.println("4 -CRITICAL");
 
          int priority;
          Priority selectedPriority = null;
@@ -103,6 +104,10 @@ public class IncidentCLI {
              case 3:
                  selectedPriority = Priority.HIGH;
                  break;
+             case 4:
+                 selectedPriority = Priority.CRITICAL;
+                 break;
+
              default:
                  System.out.println("Invalid choice, try again!\n");
 
@@ -319,6 +324,7 @@ public class IncidentCLI {
                     System.out.println("1 -LOW");
                     System.out.println("2 -MEDIUM");
                     System.out.println("3 -HIGH");
+                    System.out.println("4 -CRITICAL");
 
                     int priority;
                     Priority selectedNewPriority = null;
@@ -337,12 +343,15 @@ public class IncidentCLI {
                             case 3:
                                 selectedNewPriority = Priority.HIGH;
                                 break;
+                            case 4:
+                                selectedNewPriority = Priority.CRITICAL;
+                                break;
                             default:
                                 System.out.println("Invalid choice, try again!\n");
 
                         }
 
-                    }while (priority < 1 || priority > 3);
+                    }while (priority < 1 || priority > 4);
 
                     incident.setPriority(selectedNewPriority);
 
