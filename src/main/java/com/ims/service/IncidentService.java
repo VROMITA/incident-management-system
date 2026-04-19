@@ -7,13 +7,13 @@ import com.ims.model.Priority;
 import com.ims.repository.IncidentRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class IncidentService {
 
     private final IncidentRepository repository;
+
 
     public IncidentService(){
 
@@ -28,6 +28,8 @@ public class IncidentService {
 
         Incident incident = new Incident(title, priority, source);
         repository.save(incident);
+
+
 
         return incident;
     }

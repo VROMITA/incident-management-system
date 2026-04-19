@@ -32,7 +32,7 @@ public class IncidentRepository {
 
          // Delivery the query to the DB
        try {
-           PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);  // RETURN_GENERATED_KEYS keeps in memory the generated ID which will be retried with getGeneratedKeys
+           PreparedStatement stmt = conn.prepareStatement(sql, new String[]{"id"});  // RETURN_GENERATED_KEYS keeps in memory the generated ID which will be retried with getGeneratedKeys
 
            // Assign all the ? to the attributes
 
@@ -49,7 +49,10 @@ public class IncidentRepository {
            stmt.executeUpdate();  // Incident created
 
            // ResultSet is an object which represent the query result.
-           ResultSet keys=stmt.getGeneratedKeys();
+           ResultSet keys = conn.prepareStatement("SELECT last_insert_rowid()").executeQuery();
+           if(keys.next()){
+               incident.setId(keys.getInt(1));
+           }
 
            if(keys.next()){
                incident.setId(keys.getInt(1)); // It retries the value of the column 1
