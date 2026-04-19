@@ -25,7 +25,7 @@ public class IncidentCLI {
          int input;
 
          do {
-             System.out.println("1 - Create a new incident");
+             System.out.println("\n1 - Create a new incident");
              System.out.println("2 - View all the incidents");
              System.out.println("3 - Find an incident by ID");
              System.out.println("4 - Delete an incident");
@@ -206,9 +206,10 @@ public class IncidentCLI {
 
     public void updateIncident() {
 
+        boolean skipUpdate = false; // guard flag used for close incident
         int updateChoiceInput;
 
-        System.out.println("Update Incident Information");
+        System.out.println("\nUpdate Incident Information");
         System.out.println("Please type an ID: ");
         int typedInt = Integer.parseInt(scanner.nextLine());
 
@@ -227,14 +228,15 @@ public class IncidentCLI {
             do {
             // Start Update Information
 
-            System.out.println("Which information do you want to update?");
+            System.out.println("\nWhich information do you want to update?");
             System.out.println("1 - Title");
             System.out.println("2 - Description");
             System.out.println("3 - Status");
             System.out.println("4 - Priority");
             System.out.println("5 - Source");
             System.out.println("6 - Assigned");
-            System.out.println("7 - Exit");
+            System.out.println("7 - Close incident");
+            System.out.println("8 - Exit");
 
             updateChoiceInput = Integer.parseInt(scanner.nextLine());
 
@@ -388,6 +390,24 @@ public class IncidentCLI {
                 // EXIT
                 case 7:
 
+                    System.out.println("Are you sure you want to close the incident? y/n");
+                    String confirmClosureChoice = scanner.nextLine();
+
+                    if(confirmClosureChoice.equals("y")) {
+                        try {
+                            service.closeIncident(typedInt);
+                            System.out.println("Incident closed successfully!");
+                            skipUpdate = true;
+                            updateChoiceInput = 8;
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Error: " + e.getMessage());
+                        }
+                    }
+
+                    break;
+
+                case 8:
+
                     break;
 
                 default:
@@ -396,10 +416,10 @@ public class IncidentCLI {
 
             }
 
-
+            if(!skipUpdate)
             service.updateIncident(incident);
 
-            }while (updateChoiceInput !=7 );
+            }while (updateChoiceInput !=8 );
 
 
         }else
