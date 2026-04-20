@@ -4,29 +4,29 @@ import com.ims.model.*;
 import com.ims.repository.IncidentRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class IncidentService {
 
     private final IncidentRepository repository;
+    private final SlaMonitor slaMonitor;
 
 
-    public IncidentService(){
-
-        this.repository= new IncidentRepository();
+    public IncidentService(SlaMonitor slaMonitor) {
+        this.slaMonitor = new SlaMonitor();
+        this.repository = new IncidentRepository();
     }
 
-    public Incident createIncident(String title, Priority priority, IncidentSource source){
+    public Incident createIncident(String title, Priority priority, IncidentSource source) {
 
         // Check only title, other values are enum
-        if(title == null || title.isBlank()){
+        if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("title is invalid");
         }
 
         Incident incident = new Incident(title, priority, source);
 
-        long hours = switch (priority){
+        long hours = switch (priority) {
             case CRITICAL -> SlaPolicy.CRITICAL;
             case HIGH -> SlaPolicy.HIGH;
             case MEDIUM -> SlaPolicy.MEDIUM;
@@ -40,29 +40,29 @@ public class IncidentService {
         return incident;
     }
 
-    public List<Incident> allIncidents(){
+    public List<Incident> allIncidents() {
 
         return repository.findAll();
     }
 
-    public Optional<Incident> getIncidentById(int id){
+    public Optional<Incident> getIncidentById(int id) {
 
         return repository.findById(id);
     }
 
-    public void closeIncident(int id){
+    public void closeIncident(int id) {
 
         Optional<Incident> optional = repository.findById(id);
 
         // Check if the incident does not exist
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new IllegalArgumentException("Incident not found");
         }
 
         Incident incident = optional.get();
 
         // Check if the incident is already closed
-        if (incident.getStatus() == IncidentStatus.CLOSED){
+        if (incident.getStatus() == IncidentStatus.CLOSED) {
             throw new IllegalArgumentException("Incident already closed");
         }
 
@@ -73,11 +73,11 @@ public class IncidentService {
 
     }
 
-    public void deleteIncident(int id){
+    public void deleteIncident(int id) {
 
         Optional<Incident> optional = repository.findById(id);
 
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new IllegalArgumentException("Incident not found");
         }
 
@@ -86,10 +86,29 @@ public class IncidentService {
         repository.deleteIncident(id);
     }
 
-    public void updateIncident(Incident incident){
+    public void updateIncident(Incident incident) {
         repository.updateIncident(incident);
     }
 
+    public Map<SlaStatus, List<Incident>> checkSlaStatus() {
 
+        Map<SlaStatus, List<Incident>> result = new HashMap<>();
+        result.put(SlaStatus.BREACH, new ArrayList<>());
+        result.put(SlaStatus.AT_RISK, new ArrayList<>());
+        result.put(SlaStatus.OK, new ArrayList<>());
+
+        List<Incident> allIncident = repository.findAll();
+
+        for(Incident incident : allIncident ){
+
+
+            SlaStatus status = slaMonitor.classify(incident);
+            result.get(status).add(incident);
+
+        }
+
+        return result;
+
+    }
 
 }
