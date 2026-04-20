@@ -1,9 +1,6 @@
 package com.ims.service;
 
-import com.ims.model.Incident;
-import com.ims.model.IncidentSource;
-import com.ims.model.IncidentStatus;
-import com.ims.model.Priority;
+import com.ims.model.*;
 import com.ims.repository.IncidentRepository;
 
 import java.time.LocalDateTime;
@@ -92,6 +89,7 @@ public class IncidentService {
     public void updateIncident(Incident incident){
         repository.updateIncident(incident);
     }
+
 
 
 }
