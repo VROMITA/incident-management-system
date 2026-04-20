@@ -22,14 +22,23 @@ public class IncidentService {
 
     public Incident createIncident(String title, Priority priority, IncidentSource source){
 
+        // Check only title, other values are enum
         if(title == null || title.isBlank()){
             throw new IllegalArgumentException("title is invalid");
         }
 
         Incident incident = new Incident(title, priority, source);
+
+        long hours = switch (priority){
+            case CRITICAL -> SlaPolicy.CRITICAL;
+            case HIGH -> SlaPolicy.HIGH;
+            case MEDIUM -> SlaPolicy.MEDIUM;
+            case LOW -> SlaPolicy.LOW;
+        };
+
+        incident.setSlaDeadline(incident.getStartDate().plusHours(hours));
+
         repository.save(incident);
-
-
 
         return incident;
     }
