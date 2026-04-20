@@ -113,7 +113,7 @@ public class IncidentCLI {
 
          }
 
-         }while (priority < 1 || priority > 3);
+         }while (priority < 1 || priority > 4);
 
 
          // Source

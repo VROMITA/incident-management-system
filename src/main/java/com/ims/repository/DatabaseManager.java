@@ -47,7 +47,9 @@ public class DatabaseManager {
                  description TEXT,
                  assigned_to TEXT,
                  start_date  TEXT NOT NULL,
-                 end_date    TEXT
+                 end_date    TEXT,
+                 sla_deadline TEXT
+           
               );
            """;
 

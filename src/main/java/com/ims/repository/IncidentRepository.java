@@ -27,8 +27,8 @@ public class IncidentRepository {
        Connection conn = dbManager.getConnection(); // Get a connection with DB
         // INSERT command
        String sql = """
-    INSERT INTO incidents (title, status, priority, source, description, assigned_to, start_date, end_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""; // text block instead of concatenation
+    INSERT INTO incidents (title, status, priority, source, description, assigned_to, start_date, end_date, sla_deadline)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""; // text block instead of concatenation
 
          // Delivery the query to the DB
        try {
@@ -43,7 +43,8 @@ public class IncidentRepository {
            stmt.setString(5, incident.getDescription());
            stmt.setString(6, incident.getAssignedTo());
            stmt.setString(7, incident.getStartDate().toString());
-           stmt.setString(8, incident.getEndDate() != null ? incident.getEndDate().toString() : null ); // Operatore ternario per fare check su End Date
+           stmt.setString(8, incident.getEndDate() != null ? incident.getEndDate().toString() : null ); // ternary operator to check End Date
+           stmt.setString(9, incident.getSlaDeadline() != null ? incident.getSlaDeadline().toString() : null);
 
            // execute the query
            stmt.executeUpdate();  // Incident created
@@ -96,8 +97,13 @@ public class IncidentRepository {
                 // End date can be null in the DB therefore a variable is declared to avoid DB crash and is checked before the set method with an If
                 String endDate = rs.getString("end_date");
                 if(endDate != null) {
-                    incident.setEndDate(LocalDateTime.parse(rs.getString("end_date")));
+                    incident.setEndDate(LocalDateTime.parse(endDate));
 
+                }
+                String sla_deadline = rs.getString("sla_deadline");
+
+                if(sla_deadline != null){
+                    incident.setSlaDeadline(LocalDateTime.parse(sla_deadline));
                 }
 
                 incidents.add(incident);
@@ -143,10 +149,15 @@ public class IncidentRepository {
                 incident.setDescription(rs.getString("description"));
                 incident.setAssignedTo(rs.getString("assigned_to"));
                 incident.setStartDate(LocalDateTime.parse(rs.getString("start_date")));
-
                 String endDate = rs.getString("end_date");
+
                 if(endDate != null) {
                     incident.setEndDate(LocalDateTime.parse(endDate));
+                }
+                String sla_deadline = rs.getString("sla_deadline");
+
+                if(sla_deadline != null){
+                    incident.setSlaDeadline(LocalDateTime.parse(sla_deadline));
                 }
 
                 return Optional.of(incident);
@@ -162,8 +173,8 @@ public class IncidentRepository {
         return Optional.empty(); // error occurs -- empty
     }
 
-    // Update Incident status
-    public boolean updateStatus(int id, IncidentStatus incidentStatus){
+    // Method Deleted
+    /* public boolean updateStatus(int id, IncidentStatus incidentStatus){
 
         Connection conn = dbManager.getConnection();
         String sql = "UPDATE incidents SET status = ? WHERE id = ?";
@@ -182,13 +193,13 @@ public class IncidentRepository {
         }
 
         return false;
-    }
+    } */
 
     public boolean updateIncident(Incident incident){
         Connection conn = dbManager.getConnection();
         String sql = """
                 UPDATE incidents SET title = ?, status = ?, priority = ?, source = ?,
-                description = ?, assigned_to = ?, start_date = ?, end_date = ?
+                description = ?, assigned_to = ?, start_date = ?, end_date = ?, sla_deadline = ?
                 WHERE id = ?
                 """;
 
@@ -203,7 +214,8 @@ public class IncidentRepository {
             stmt.setString(6, incident.getAssignedTo());
             stmt.setString(7, incident.getStartDate().toString());
             stmt.setString(8, incident.getEndDate() != null ? incident.getEndDate().toString() : null ); // Operatore ternario per fare check su End Date
-            stmt.setInt(9, incident.getId());
+            stmt.setString(9, incident.getSlaDeadline() != null ? incident.getSlaDeadline().toString() : null);
+            stmt.setInt(10, incident.getId());
 
             int rows = stmt.executeUpdate();
             return  rows > 0;

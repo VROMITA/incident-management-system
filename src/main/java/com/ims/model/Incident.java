@@ -25,6 +25,7 @@ endDate     → LocalDateTime
     private String assignedTo;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private LocalDateTime sla_deadline;
 
 
     // CONSTRUCTOR
@@ -34,6 +35,7 @@ endDate     → LocalDateTime
         this.priority = priority;
         this.source = source;
         this.startDate = LocalDateTime.now();
+
 
     }
 
@@ -75,6 +77,10 @@ endDate     → LocalDateTime
         return id;
     }
 
+    public LocalDateTime getSlaDeadline() {
+        return sla_deadline;
+    }
+
     // SETTER
 
 
@@ -112,6 +118,10 @@ endDate     → LocalDateTime
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setSlaDeadline(LocalDateTime sla_deadline) {
+        this.sla_deadline = sla_deadline;
     }
 
     // OVERRIDE toString
