@@ -34,7 +34,13 @@ public class IncidentCLI {
              System.out.println("7 - Exit");
 
              System.out.println("Choose an option: ");
-             input = Integer.parseInt(scanner.nextLine());
+
+             try {
+                 input = Integer.parseInt(scanner.nextLine());
+             } catch (NumberFormatException e) {
+                 System.out.println("Invalid input. Please enter a number.");
+                 input = 0;
+             }
 
              switch (input){
 
@@ -82,8 +88,14 @@ public class IncidentCLI {
          // Start fill out data
 
          // Title
-         System.out.println("Choose a title: ");
-         String title = scanner.nextLine();
+         String title;
+         do {
+             System.out.println("Choose a title: ");
+             title = scanner.nextLine().trim();
+             if (title.isBlank()) {
+                 System.out.println("Title cannot be empty. Try again.");
+             }
+         } while (title.isBlank());
 
          // Priority
          System.out.println("Select priority:");
@@ -96,8 +108,12 @@ public class IncidentCLI {
          Priority selectedPriority = null;
 
          do {
-
-             priority = Integer.parseInt(scanner.nextLine());
+             try {
+                 priority = Integer.parseInt(scanner.nextLine());
+             } catch (NumberFormatException e) {
+                 System.out.println("Invalid input. Please enter a number.");
+                 priority = 0;
+             }
 
          switch (priority){
              case 1:
@@ -131,7 +147,12 @@ public class IncidentCLI {
 
          do {
 
-             source = Integer.parseInt(scanner.nextLine());
+             try {
+                 source = Integer.parseInt(scanner.nextLine());
+             } catch (NumberFormatException e) {
+                 System.out.println("Invalid input. Please enter a number.");
+                 source = 0;
+             }
 
              switch (source){
                  case 1:
@@ -165,7 +186,13 @@ public class IncidentCLI {
          int typedInt;
           System.out.println("Search an incident");
           System.out.println("Please type an ID: ");
-          typedInt = Integer.parseInt(scanner.nextLine());
+
+          try {
+              typedInt = Integer.parseInt(scanner.nextLine());
+          } catch (NumberFormatException e) {
+              System.out.println("Invalid input. Please enter a number.");
+              typedInt = -1;
+          }
 
           Optional<Incident> incidents = service.getIncidentById(typedInt);
 
@@ -191,7 +218,13 @@ public class IncidentCLI {
 
           System.out.println("Incident Deletion");
           System.out.println("Please type an ID ");
-          typedInt = Integer.parseInt(scanner.nextLine());
+
+          try {
+              typedInt = Integer.parseInt(scanner.nextLine());
+          } catch (NumberFormatException e) {
+              System.out.println("Invalid input. Please enter a number.");
+              typedInt = -1;
+          }
 
           Optional<Incident> incidents = service.getIncidentById(typedInt);
 
@@ -221,7 +254,14 @@ public class IncidentCLI {
 
         System.out.println("\nUpdate Incident Information");
         System.out.println("Please type an ID: ");
-        int typedInt = Integer.parseInt(scanner.nextLine());
+        int typedInt;
+
+        try {
+            typedInt = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            typedInt = -1;
+        }
 
         Optional<Incident> incidents = service.getIncidentById(typedInt);
 
@@ -248,15 +288,26 @@ public class IncidentCLI {
             System.out.println("7 - Close incident");
             System.out.println("8 - Exit");
 
-            updateChoiceInput = Integer.parseInt(scanner.nextLine());
+                try {
+                    updateChoiceInput = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number.");
+                    updateChoiceInput = -1;
+                }
 
             switch (updateChoiceInput){
 
                 // UPDATE TITLE
                 case 1:
 
-                    System.out.println("Update title:");
-                    String newTitle = scanner.nextLine();
+                    String newTitle;
+                    do {
+                        System.out.println("Update title:");
+                        newTitle = scanner.nextLine().trim();
+                        if (newTitle.isBlank()) {
+                            System.out.println("Title cannot be empty. Try again.");
+                        }
+                    } while (newTitle.isBlank());
                     incident.setTitle(newTitle);
 
                     break;
@@ -286,15 +337,21 @@ public class IncidentCLI {
 
                     do {
 
-                        status = Integer.parseInt(scanner.nextLine());
+                        try {
+                            status = Integer.parseInt(scanner.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a number.");
+                            status = 0;
+                        }
 
                         switch (status){
                             case 1:
                                 selectedNewStatus = IncidentStatus.ASSIGNED;
 
-                                if (incident.getAssignedTo() == null || incident.getAssignedTo().isEmpty())
+                                if (incident.getAssignedTo() == null || incident.getAssignedTo().isEmpty()) {
 
-                                System.out.println("PLEASE CHANGE ASSIGNED PERSON!");
+                                    System.out.println("PLEASE CHANGE ASSIGNED PERSON!");
+                                }
 
                                 break;
                             case 2:
@@ -335,8 +392,13 @@ public class IncidentCLI {
                     Priority selectedNewPriority = null;
 
                     do {
+                            try {
+                                priority = Integer.parseInt(scanner.nextLine());
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a number.");
+                                priority = 0;
+                            }
 
-                        priority = Integer.parseInt(scanner.nextLine());
 
                         switch (priority){
                             case 1:
@@ -374,7 +436,12 @@ public class IncidentCLI {
 
                     do {
 
-                        source = Integer.parseInt(scanner.nextLine());
+                        try {
+                            source = Integer.parseInt(scanner.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a number.");
+                            source = 0;
+                        }
 
                         switch (source){
                             case 1:
@@ -401,7 +468,7 @@ public class IncidentCLI {
 
                     break;
 
-                // EXIT
+                // CLOSE
                 case 7:
 
                     System.out.println("Are you sure you want to close the incident? y/n");
@@ -416,10 +483,12 @@ public class IncidentCLI {
                         } catch (IllegalArgumentException e) {
                             System.out.println("Error: " + e.getMessage());
                         }
-                    }
+                    }else
+                        System.out.println("Incident closure cancelled");
 
                     break;
 
+                    // EXIT
                 case 8:
 
                     break;
@@ -491,5 +560,16 @@ public class IncidentCLI {
                 System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | overdue since " + Math.abs(hoursLeft) + " hours");
             }
      }
+
+/*
+     // ADD COMMENT LATER
+     private int readInt(String prompt){
+         while(true){
+             System.out.println(prompt);
+             String raw = scanner.nextLine().trim()
+         }
+     }
+
+ */
 
 }
