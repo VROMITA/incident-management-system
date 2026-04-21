@@ -12,7 +12,7 @@ public class IncidentService {
     private final SlaMonitor slaMonitor;
 
 
-    public IncidentService(SlaMonitor slaMonitor) {
+    public IncidentService() {
         this.slaMonitor = new SlaMonitor();
         this.repository = new IncidentRepository();
     }
@@ -92,6 +92,7 @@ public class IncidentService {
 
     public Map<SlaStatus, List<Incident>> checkSlaStatus() {
 
+        // Create 3 Empty List with the assigned status
         Map<SlaStatus, List<Incident>> result = new HashMap<>();
         result.put(SlaStatus.BREACH, new ArrayList<>());
         result.put(SlaStatus.AT_RISK, new ArrayList<>());
@@ -99,8 +100,8 @@ public class IncidentService {
 
         List<Incident> allIncident = repository.findAll();
 
+        // iterate through all the incident - classify them and assign to the correct ArrayList
         for(Incident incident : allIncident ){
-
 
             SlaStatus status = slaMonitor.classify(incident);
             result.get(status).add(incident);

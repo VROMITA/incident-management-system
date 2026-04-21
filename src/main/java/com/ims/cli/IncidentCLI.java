@@ -1,12 +1,12 @@
 package com.ims.cli;
 
-import com.ims.model.Incident;
-import com.ims.model.IncidentSource;
-import com.ims.model.IncidentStatus;
-import com.ims.model.Priority;
+import com.ims.model.*;
 import com.ims.service.IncidentService;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -30,7 +30,8 @@ public class IncidentCLI {
              System.out.println("3 - Find an incident by ID");
              System.out.println("4 - Delete an incident");
              System.out.println("5 - Update an incident");
-             System.out.println("6 - Exit");
+             System.out.println("6 - Check SLA status");
+             System.out.println("7 - Exit");
 
              System.out.println("Choose an option: ");
              input = Integer.parseInt(scanner.nextLine());
@@ -58,13 +59,17 @@ public class IncidentCLI {
                      break;
 
                  case 6:
+                     checkSlaStatus();
+                     break;
+
+                 case 7:
                      break;
 
                  default:
                      System.out.println("Invalid option. Try again.\n");
              }
 
-         }while (input !=6 );
+         }while (input !=7 );
 
          System.out.println("Bye Bye!\n");
 
@@ -435,5 +440,56 @@ public class IncidentCLI {
 
             System.out.println("No incident found");
     }
+
+    public void checkSlaStatus() {
+
+        Map<SlaStatus, List<Incident>> slaList = service.checkSlaStatus();
+        List<Incident> okList = slaList.get(SlaStatus.OK);
+        List<Incident> riskList = slaList.get(SlaStatus.AT_RISK);
+        List<Incident> breachList = slaList.get(SlaStatus.BREACH);
+
+        System.out.println("Report SLA status");
+        System.out.println("─────────────────────────────");
+        System.out.println("✅ OK STATUS: ");
+        if (okList.isEmpty()) {
+            System.out.println("No incidents in OK status");
+        } else {
+            for (Incident incident : okList) {
+
+                long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), incident.getSlaDeadline());
+                System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getPriority() + " | " + "expire in " + hoursLeft + " hours");
+            }
+        }
+
+        System.out.println("─────────────────────────────");
+        System.out.println("⚠️ RISK STATUS: ");
+
+        if (riskList.isEmpty()) {
+
+            System.out.println("No incidents at Risk status");
+
+        } else
+            for (Incident incident : riskList) {
+
+                long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), incident.getSlaDeadline());
+
+                System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getPriority() + " | " + "expire in " + hoursLeft + " hours");
+
+            }
+
+        System.out.println("─────────────────────────────");
+        System.out.println("\uD83D\uDD34 BREACH STATUS: ");
+
+        if (breachList.isEmpty()) {
+            System.out.println("No breach ");
+        } else
+
+            for (Incident incident : breachList) {
+
+                long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), incident.getSlaDeadline());
+
+                System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | overdue since " + Math.abs(hoursLeft) + " hours");
+            }
+     }
 
 }
