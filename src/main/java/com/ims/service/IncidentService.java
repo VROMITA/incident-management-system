@@ -5,11 +5,13 @@ import com.ims.repository.IncidentRepository;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class IncidentService {
 
     private final IncidentRepository repository;
     private final SlaMonitor slaMonitor;
+    private static final Logger logger = Logger.getLogger(IncidentService.class.getName());
 
 
     public IncidentService() {
@@ -36,6 +38,7 @@ public class IncidentService {
         incident.setSlaDeadline(incident.getStartDate().plusHours(hours));
 
         repository.save(incident);
+        logger.info("Incident created: ID=" + incident.getId() + " | " + incident.getTitle() + " | " + priority);
 
         return incident;
     }
@@ -63,13 +66,16 @@ public class IncidentService {
 
         // Check if the incident is already closed
         if (incident.getStatus() == IncidentStatus.CLOSED) {
+            logger.warning("Attempt to close already CLOSED incident: ID=" + id);
             throw new IllegalArgumentException("Incident already closed");
+
         }
 
         // Change Status and Date
         incident.setStatus(IncidentStatus.CLOSED);
         incident.setEndDate(LocalDateTime.now());
         repository.updateIncident(incident);
+        logger.info("Incident closed: ID=" + id);
 
     }
 
@@ -84,14 +90,16 @@ public class IncidentService {
         Incident incident = optional.get();
 
         repository.deleteIncident(id);
+        logger.warning("Incident deleted: ID=" + id);
     }
 
     public void updateIncident(Incident incident) {
         repository.updateIncident(incident);
+        logger.info("Incident updated: ID=" + incident.getId());
     }
 
     public Map<SlaStatus, List<Incident>> checkSlaStatus() {
-
+        logger.info("SLA status check executed");
         // Create 3 Empty List with the assigned status
         Map<SlaStatus, List<Incident>> result = new HashMap<>();
         result.put(SlaStatus.BREACH, new ArrayList<>());
