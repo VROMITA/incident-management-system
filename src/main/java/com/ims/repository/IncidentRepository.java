@@ -7,9 +7,7 @@ import com.ims.model.Priority;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class IncidentRepository {
 
@@ -245,6 +243,30 @@ public class IncidentRepository {
         }
 
         return false;
+    }
+
+    public Map<String, Integer> countByStatus(){
+
+        String sql ="SELECT status, COUNT(*) as total FROM incidents GROUP BY status";
+        Map<String, Integer> statusList = new HashMap<>();
+
+        // try-with-resources
+        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while(rs.next()){
+
+                statusList.put(rs.getString("status"), rs.getInt("total") );
+
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Error occured counting the incidents by status" + e.getMessage());
+
+        }
+        return statusList;
+
     }
 
 }
