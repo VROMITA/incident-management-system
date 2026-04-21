@@ -23,8 +23,7 @@ The project follows a layered architecture:
 
 ## Features
 
-
-### v1.0 - CLI core
+### v1.0 - CLI Core
 - Create a new incident
 - View all incidents
 - Find an incident by ID
@@ -37,6 +36,12 @@ The project follows a layered architecture:
 - Real-time SLA classification (OK, AT RISK, BREACH)
 - SLA status report from CLI
 
+### v2.1 - Validation + Logging
+- Input validation on all numeric inputs (NumberFormatException handling)
+- Empty title validation with loop in create and update
+- Operational logging via java.util.logging (INFO, WARNING)
+- Javadoc on all public methods (Service, Repository, SlaMonitor)
+
 ## Getting Started
 
 1. Clone the repository
@@ -48,13 +53,12 @@ The project follows a layered architecture:
 
 ## Roadmap
 
-- **v1.0** ✅ | Released | CLI core - create, view, find, update, delete, close incidents
-- **v2.0** ✅ | Released | SLA Monitor - track and alert on incident resolution deadlines
-- **v3.0** 🔄 | Planned  | Reports - incident statistics and export
-- **v4.0** 🚀 | Planned  | Spring Boot REST API - migrate to web API with PostgreSQL
-
-
+- **v1.0** ✅ | Released | CLI core
+- **v2.0** ✅ | Released | SLA Monitor
+- **v2.1** ✅ | Released | Validation + Logging + Javadoc
+- **v3.0** 🔄 | Planned  | Reports - incident statistics
+- **v4.0** 🚀 | Planned  | Spring Boot REST API + PostgreSQL
+- 
 ## Planned Improvements
 
-- **v2.1** Input Validation + Logging
 - **v3.5** Comment System

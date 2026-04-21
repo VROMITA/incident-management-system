@@ -7,9 +7,7 @@ import com.ims.model.Priority;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class IncidentRepository {
 
@@ -22,7 +20,10 @@ public class IncidentRepository {
     }
 
 
-    // Save the incident into the DB
+    /**
+     * Save the incident in the DB
+     * @param incident the incident filled out by the user
+     */
     public void save(Incident incident){
        Connection conn = dbManager.getConnection(); // Get a connection with DB
         // INSERT command
@@ -66,7 +67,10 @@ public class IncidentRepository {
 
     }
 
-    // Retrieves all the Incident
+    /**
+     * It returns a list of the all incidents
+     * @return a list of all incidents
+     */
     public List<Incident> findAll(){
 
         List<Incident> incidents = new ArrayList<>();
@@ -121,7 +125,11 @@ public class IncidentRepository {
     }
 
 
-    // Returns the incident by id, or empty if not found
+    /**
+     * It returns an Incident or null if the ID cannot be found
+     * @param id the ID used for the search
+     * @return The incident by ID Or null
+     */
     public Optional<Incident> findById(int id){
 
         Connection conn = dbManager.getConnection();
@@ -195,6 +203,11 @@ public class IncidentRepository {
         return false;
     } */
 
+    /**
+     * Update the incident in the DB
+     * @param incident the Incident that the user wants to update
+     * @return true if the update is successful or false if it failed
+     */
     public boolean updateIncident(Incident incident){
         Connection conn = dbManager.getConnection();
         String sql = """
@@ -229,6 +242,11 @@ public class IncidentRepository {
 
     }
 
+    /**
+     * Delete the incident in the DB
+     * @param id the ID of the incident that has to be deleted
+     * @return true if it is successful or false if not
+     */
     public boolean deleteIncident(int id){
 
         Connection conn = dbManager.getConnection();
@@ -245,6 +263,34 @@ public class IncidentRepository {
         }
 
         return false;
+    }
+
+    /**
+     * It return a list that includes a count of incidents based on Status
+     * @return a Map with as a Key Status and total as value
+     */
+    public Map<String, Integer> countByStatus(){
+
+        String sql ="SELECT status, COUNT(*) as total FROM incidents GROUP BY status";
+        Map<String, Integer> statusList = new HashMap<>();
+
+        // try-with-resources
+        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while(rs.next()){
+
+                statusList.put(rs.getString("status"), rs.getInt("total") );
+
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Error occured counting the incidents by status" + e.getMessage());
+
+        }
+        return statusList;
+
     }
 
 }

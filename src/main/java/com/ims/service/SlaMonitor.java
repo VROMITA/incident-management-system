@@ -9,7 +9,12 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class SlaMonitor {
-
+    /**
+     * It returns a classification of the incident based on the priority - BREACH - AT_RISK - OK
+     * the threshold is 6 hours - AT_RISK_THRESHOLD - and the remaining time and classification is based on this timeframe
+     * @param incident the Incident that has to be classified
+     * @return the classification of the incident
+     */
     public SlaStatus classify(Incident incident){
 
           // CHECK if incident is close
@@ -18,7 +23,7 @@ public class SlaMonitor {
 
 
       }
-
+        // Time in hours remaining before the BREACH
       long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), incident.getSlaDeadline());
 
         // CHECK BREACH

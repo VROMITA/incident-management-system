@@ -19,6 +19,13 @@ public class IncidentService {
         this.repository = new IncidentRepository();
     }
 
+    /**
+     * Create a new incident and calculate the SLA deadline based on priority
+     * @param title the incident title cannot be blank or null
+     * @param priority the SLA deadline is calculated based on the priority
+     * @param source the source is the reporter user
+     * @return the created incident with an ID and the SLA deadline
+     */
     public Incident createIncident(String title, Priority priority, IncidentSource source) {
 
         // Check only title, other values are enum
@@ -43,16 +50,29 @@ public class IncidentService {
         return incident;
     }
 
+    /**
+     * The output is a list of the all incidents
+     * @return a list of the incidents
+     */
     public List<Incident> allIncidents() {
 
         return repository.findAll();
     }
 
+    /**
+     * A search by using the ID - if the user does not know the ID can use the allIncidents method
+     * @param id the ID of the incident
+     * @return the incident with the searched ID
+     */
     public Optional<Incident> getIncidentById(int id) {
 
         return repository.findById(id);
     }
 
+    /**
+     * It close the incident with validation
+     * @param id The incident ID that the user wants to close
+     */
     public void closeIncident(int id) {
 
         Optional<Incident> optional = repository.findById(id);
@@ -79,6 +99,10 @@ public class IncidentService {
 
     }
 
+    /**
+     * Delete the incident by the ID
+     * @param id the ID of the incident that has to be deleted
+     */
     public void deleteIncident(int id) {
 
         Optional<Incident> optional = repository.findById(id);
@@ -93,11 +117,21 @@ public class IncidentService {
         logger.warning("Incident deleted: ID=" + id);
     }
 
+    /**
+     * Update the values of the incident
+     * @param incident The incidents that the user wants to modify
+     */
     public void updateIncident(Incident incident) {
         repository.updateIncident(incident);
         logger.info("Incident updated: ID=" + incident.getId());
     }
 
+    /**
+     * Checks the SLA status of all open incidents and classifies them
+     * as BREACH, AT_RISK or OK based on their deadline and priority.
+     *
+     * @return a Map with SlaStatus as key and the list of incidents for each status
+     */
     public Map<SlaStatus, List<Incident>> checkSlaStatus() {
         logger.info("SLA status check executed");
         // Create 3 Empty List with the assigned status
