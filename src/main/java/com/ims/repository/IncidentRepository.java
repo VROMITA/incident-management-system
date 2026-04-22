@@ -25,15 +25,15 @@ public class IncidentRepository {
      * @param incident the incident filled out by the user
      */
     public void save(Incident incident){
-       Connection conn = dbManager.getConnection(); // Get a connection with DB
+        // Get a connection with DB
         // INSERT command
        String sql = """
     INSERT INTO incidents (title, status, priority, source, description, assigned_to, start_date, end_date, sla_deadline)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""; // text block instead of concatenation
 
          // Delivery the query to the DB
-       try {
-           PreparedStatement stmt = conn.prepareStatement(sql, new String[]{"id"});  // RETURN_GENERATED_KEYS keeps in memory the generated ID which will be retried with getGeneratedKeys
+       try(Connection conn = dbManager.getConnection();PreparedStatement stmt = conn.prepareStatement(sql, new String[]{"id"});) {
+             // RETURN_GENERATED_KEYS keeps in memory the generated ID which will be retried with getGeneratedKeys
 
            // Assign all the ? to the attributes
 
@@ -56,14 +56,9 @@ public class IncidentRepository {
                incident.setId(keys.getInt(1));
            }
 
-           if(keys.next()){
-               incident.setId(keys.getInt(1)); // It retries the value of the column 1
-           }
-
-       } catch (SQLException e) {
+         } catch (SQLException e) {
            System.out.println("Error save: " + e.getMessage());
-       }
-
+         }
 
     }
 
@@ -74,12 +69,10 @@ public class IncidentRepository {
     public List<Incident> findAll(){
 
         List<Incident> incidents = new ArrayList<>();
-        Connection conn = dbManager.getConnection();
         String sql = "SELECT * FROM incidents";
 
-        try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
+        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery();) {
+
 
 
             // For the attributes not included in the constructor as parameter the setter is used
@@ -132,12 +125,10 @@ public class IncidentRepository {
      */
     public Optional<Incident> findById(int id){
 
-        Connection conn = dbManager.getConnection();
+
         String sql = "SELECT * FROM incidents where id = ?";
 
-        try {
-
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ) {
 
             stmt.setInt(1, id);
 
@@ -187,15 +178,15 @@ public class IncidentRepository {
      * @return true if the update is successful or false if it failed
      */
     public boolean updateIncident(Incident incident){
-        Connection conn = dbManager.getConnection();
+
         String sql = """
                 UPDATE incidents SET title = ?, status = ?, priority = ?, source = ?,
                 description = ?, assigned_to = ?, start_date = ?, end_date = ?, sla_deadline = ?
                 WHERE id = ?
                 """;
 
-        try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ) {
+
 
             stmt.setString(1, incident.getTitle());
             stmt.setString(2, incident.getStatus().name());
@@ -217,7 +208,6 @@ public class IncidentRepository {
 
         return false; // error
 
-
     }
 
     /**
@@ -227,11 +217,10 @@ public class IncidentRepository {
      */
     public boolean deleteIncident(int id){
 
-        Connection conn = dbManager.getConnection();
         String sql = "DELETE FROM incidents WHERE id = ?";
 
-        try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);) {
+
             stmt.setInt(1, id);
             int rows = stmt.executeUpdate();
             return rows >0;

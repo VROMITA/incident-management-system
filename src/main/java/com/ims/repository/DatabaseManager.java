@@ -8,16 +8,11 @@ public class DatabaseManager {
 
     private static final String DB_URL = "jdbc:sqlite:incidents.db";
     private static DatabaseManager instance;
-    private Connection connection;
+
 
     // private constructor -- open connection with the DB
     private DatabaseManager(){
-        try{
-            connection = DriverManager.getConnection(DB_URL);
-            System.out.println("Database connected!");
-        } catch (SQLException e) {
-            System.out.println("connection error: " + e.getMessage());
-        }
+
     }
 
 
@@ -31,8 +26,8 @@ public class DatabaseManager {
 
 
     // getConnection
-    public Connection getConnection(){
-        return connection;
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL);
     }
 
     // create table method
@@ -53,8 +48,8 @@ public class DatabaseManager {
               );
            """;
 
-        try {
-            connection.createStatement().execute(sql);
+        try(Connection conn = DriverManager.getConnection(DB_URL)) {
+            conn.createStatement().execute(sql);
             System.out.println("Incidents table ready!");
         } catch (SQLException e) {
             System.out.println("Error creating table: " + e.getMessage());

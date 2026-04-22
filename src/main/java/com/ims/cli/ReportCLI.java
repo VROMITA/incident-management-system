@@ -27,8 +27,8 @@ public class ReportCLI {
         do {
             System.out.println("\n1 - View report by Status");
             System.out.println("2 - View report by Priority");
-            System.out.println("3 - View report by selected timeframe");
-            System.out.println("4 - View report of resolution time");
+            System.out.println("3  - View report of resolution time");
+            System.out.println("4 - - View report by selected timeframe");
             System.out.println("0 - Exit");
 
             System.out.println("Choose an option: ");
