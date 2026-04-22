@@ -313,4 +313,25 @@ public class IncidentRepository {
         return priorityList;
     }
 
+    public float averageResolutionTime(){
+
+        String sql = "SELECT AVG(julianday(end_date) - julianday(start_date)) * 24 AS average_hours FROM incidents WHERE end_date IS NOT null";
+
+        float averageTime = 0;
+
+        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()){
+
+            if (rs.next()){
+
+                averageTime = rs.getFloat("average_hours");
+            }
+
+        }catch(SQLException e){
+
+            System.out.println("Error retriving average resolution :" + e.getMessage());
+        }
+
+        return averageTime;
+    }
+
 }
