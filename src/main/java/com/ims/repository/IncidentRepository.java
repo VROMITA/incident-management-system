@@ -293,4 +293,24 @@ public class IncidentRepository {
 
     }
 
+    public Map<String, Integer> countByPriority(){
+
+        String sql ="SELECT priority, COUNT(*) as total FROM incidents GROUP BY priority";
+        Map<String, Integer> priorityList = new HashMap<>();
+
+        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()){
+
+                priorityList.put(rs.getString("priority"), rs.getInt("total"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving priority list " + e.getMessage());
+        }
+
+        return priorityList;
+    }
+
 }

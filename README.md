@@ -58,7 +58,7 @@ The project follows a layered architecture:
 - **v2.1** ✅ | Released | Validation + Logging + Javadoc
 - **v3.0** 🔄 | Planned  | Reports - incident statistics
 - **v4.0** 🚀 | Planned  | Spring Boot REST API + PostgreSQL
-- 
+
 ## Planned Improvements
 
 - **v3.5** Comment System

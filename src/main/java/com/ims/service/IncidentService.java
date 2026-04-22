@@ -113,8 +113,13 @@ public class IncidentService {
 
         Incident incident = optional.get();
 
-        repository.deleteIncident(id);
-        logger.warning("Incident deleted: ID=" + id);
+        if (repository.deleteIncident(id)) {
+
+            logger.warning("Incident deleted: ID=" + id);
+
+        }else {
+            logger.warning("Deletion terminated unsuccessfully ID=" + id);
+        }
     }
 
     /**
@@ -122,8 +127,13 @@ public class IncidentService {
      * @param incident The incidents that the user wants to modify
      */
     public void updateIncident(Incident incident) {
-        repository.updateIncident(incident);
-        logger.info("Incident updated: ID=" + incident.getId());
+
+        if (repository.updateIncident(incident)) {
+            logger.info("Incident updated: ID=" + incident.getId());
+        }else {
+            logger.warning("Incident NOT updated: ID= " + incident.getId());
+        }
+
     }
 
     /**
