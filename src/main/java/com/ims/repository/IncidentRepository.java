@@ -181,28 +181,6 @@ public class IncidentRepository {
         return Optional.empty(); // error occurs -- empty
     }
 
-    // Method Deleted
-    /* public boolean updateStatus(int id, IncidentStatus incidentStatus){
-
-        Connection conn = dbManager.getConnection();
-        String sql = "UPDATE incidents SET status = ? WHERE id = ?";
-
-        try {
-
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, incidentStatus.name());
-            stmt.setInt(2, id);
-
-            int rows = stmt.executeUpdate();
-            return rows >0;
-
-        }catch (SQLException e){
-            System.out.println("Error updating: " + e.getMessage());
-        }
-
-        return false;
-    } */
-
     /**
      * Update the incident in the DB
      * @param incident the Incident that the user wants to update
@@ -328,10 +306,61 @@ public class IncidentRepository {
 
         }catch(SQLException e){
 
-            System.out.println("Error retriving average resolution :" + e.getMessage());
+            System.out.println("Error retrieving average resolution :" + e.getMessage());
         }
 
         return averageTime;
+    }
+
+    public List<Incident> getIncidentByRangeDate(LocalDateTime from, LocalDateTime to){
+
+        String sql = "SELECT * FROM incidents where start_date BETWEEN ? AND ?";
+        List<Incident> rangeIncidents = new ArrayList<>();
+
+
+
+
+        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)){
+
+            stmt.setString(1, from.toString());
+            stmt.setString(2, to.toString());
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+
+                Incident incident = new Incident(
+
+                        rs.getString("title"),
+                        Priority.valueOf(rs.getString("priority")),
+                        IncidentSource.valueOf(rs.getString("source"))
+                );
+
+                incident.setId(rs.getInt("id"));
+                incident.setStatus(IncidentStatus.valueOf(rs.getString("status")));
+                incident.setDescription(rs.getString("description"));
+                incident.setAssignedTo(rs.getString("assigned_to"));
+                incident.setStartDate(LocalDateTime.parse(rs.getString("start_date")));
+
+                // End date can be null in the DB therefore a variable is declared to avoid DB crash and is checked before the set method with an If
+                String endDate = rs.getString("end_date");
+                if (endDate != null) {
+                    incident.setEndDate(LocalDateTime.parse(endDate));
+
+                }
+                String sla_deadline = rs.getString("sla_deadline");
+
+                if (sla_deadline != null) {
+                    incident.setSlaDeadline(LocalDateTime.parse(sla_deadline));
+                }
+
+                rangeIncidents.add(incident);
+            }
+
+        }catch (SQLException e){
+            System.out.println("Error retrieving incident by range " + e.getMessage());
+        }
+
+        return rangeIncidents;
     }
 
 }
