@@ -11,8 +11,9 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class IncidentCLI {
-     private Scanner scanner = new Scanner(System.in);
-     private IncidentService service = new IncidentService();
+     private final Scanner scanner = new Scanner(System.in);
+     private final IncidentService service = new IncidentService();
+     private final ReportCLI reportCLI = new ReportCLI();
 
      public void start(){
          System.out.println("Welcome to the Incident Management System\n");
@@ -31,7 +32,8 @@ public class IncidentCLI {
              System.out.println("4 - Delete an incident");
              System.out.println("5 - Update an incident");
              System.out.println("6 - Check SLA status");
-             System.out.println("7 - Exit");
+             System.out.println("7 - Report options");
+             System.out.println("8 - Exit");
 
              System.out.println("Choose an option: ");
 
@@ -69,13 +71,18 @@ public class IncidentCLI {
                      break;
 
                  case 7:
+                     reportCLI.start();
                      break;
+
+                 case 8 :
+                     break;
+
 
                  default:
                      System.out.println("Invalid option. Try again.\n");
              }
 
-         }while (input !=7 );
+         }while (input !=8 );
 
          System.out.println("Bye Bye!\n");
 
