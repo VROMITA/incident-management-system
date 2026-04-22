@@ -1,8 +1,11 @@
 package com.ims.service;
 
+import com.ims.model.Incident;
 import com.ims.repository.IncidentRepository;
 
+import java.time.LocalDateTime;
 import java.util.Formattable;
+import java.util.List;
 import java.util.Map;
 
 public class ReportService {
@@ -16,37 +19,36 @@ public class ReportService {
     }
 
 
-    public void printStatusReport(){
+    public Map<String, Integer> getStatusReport(){
 
-        Map<String, Integer> statusMap = repository.countByStatus();
-
-        System.out.println("=== INCIDENTS BY STATUS ===");
-
-        for (Map.Entry<String, Integer> entry : statusMap.entrySet()){
-
-            System.out.println( entry.getKey() + " : " + entry.getValue() );
-
-        }
+        return  repository.countByStatus();
     }
 
 
-    public void printPriorityReport(){
+    public Map<String, Integer>  getPriorityReport(){
 
-        Map<String, Integer> priorityMap = repository.countByPriority();
 
-        System.out.println("=== INCIDENTS BY PRIORITY ===");
+
+        /* System.out.println("=== INCIDENTS BY PRIORITY ===");
 
         for (Map.Entry<String, Integer> entry : priorityMap.entrySet()){
 
             System.out.println( entry.getKey() + " : " + entry.getValue() );
+*/
+        return repository.countByPriority();
+        }
+
+
+    public float getAverageResolutionTime(){
+
+        return repository.averageResolutionTime();
+    }
+
+    public List<Incident> getIncidentByDateRange(LocalDateTime from, LocalDateTime to){
+
+        return repository.getIncidentByRangeDate(from, to);
+
 
         }
-    }
 
-    public void printAverageResolutionTime(){
-
-        float averageTime = repository.averageResolutionTime();
-
-        System.out.println("Average Resolution Time " + averageTime + " hours");
-    }
 }
