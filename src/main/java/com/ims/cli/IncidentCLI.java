@@ -177,7 +177,8 @@ public class IncidentCLI {
 
          for (Incident incident :
               incidents) {
-             System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getStatus() + " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
+                     System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " +
+                     incident.getStatus() + " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
           }
       }
 

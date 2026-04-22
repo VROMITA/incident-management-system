@@ -1,13 +1,18 @@
 package com.ims.cli;
 
+import com.ims.model.Incident;
 import com.ims.service.ReportService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ReportCLI {
 
-    private Scanner scanner = new Scanner(System.in);
-    private ReportService report = new ReportService();
+    private final Scanner scanner = new Scanner(System.in);
+    private final ReportService report = new ReportService();
 
     public void start(){
         System.out.println("IMS Reports");
@@ -38,19 +43,19 @@ public class ReportCLI {
             switch (input){
 
                 case 1:
-                    System.out.println("Report By status coming soon..");
+                    printReportByStatus();
                     break;
 
                 case 2:
-                    System.out.println("Report By priority coming soon..");
+                    printReportByPriority();
                     break;
 
                 case 3:
-                    System.out.println("Report By average coming soon..");
+                    printAverageResolutionTime();
                     break;
 
                 case 4:
-                    System.out.println("Report By resolution time coming soon..");
+                    printIncidentByDateRange();
                     break;
 
                 case 0:
@@ -63,4 +68,66 @@ public class ReportCLI {
 
 
     }
+
+    public void printReportByStatus(){
+
+        Map<String, Integer> statusMapReport = report.getStatusReport();
+
+        System.out.println("=== INCIDENTS BY STATUS ===");
+
+        for (Map.Entry<String, Integer> entry : statusMapReport.entrySet()){
+
+            System.out.println( entry.getKey() + " : " + entry.getValue() );
+        }
+    }
+
+    public void printReportByPriority() {
+
+        Map<String, Integer> priorityMapReport = report.getPriorityReport();
+
+        System.out.println("=== INCIDENTS BY PRIORITY ===");
+
+        for (Map.Entry<String, Integer> entry : priorityMapReport.entrySet()) {
+
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+        }
+    }
+
+    public void printAverageResolutionTime(){
+
+        float averageResolutionTime = report.getAverageResolutionTime();
+
+        System.out.println("Average resolution time : " + averageResolutionTime + " hours");
+    }
+
+    public void printIncidentByDateRange(){
+
+        System.out.println("Please select the timestamp - format YYYY-MM-DD");
+
+        System.out.println("FROM: ");
+
+        LocalDate fromDate = LocalDate.parse(scanner.nextLine());
+        LocalDateTime from = fromDate.atStartOfDay();
+
+        System.out.println("TO: ");
+
+        LocalDate toDate = LocalDate.parse(scanner.nextLine());
+        LocalDateTime to = toDate.atTime(23, 59);
+
+        List<Incident> listIncidentByRange = report.getIncidentByDateRange(from, to);
+
+        if (listIncidentByRange.isEmpty()){
+            System.out.println("No incident in this timeframe");
+        }
+
+        for (Incident incident : listIncidentByRange){
+
+
+            System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getStatus() +
+                    " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
+        }
+
+    }
+
+
 }
