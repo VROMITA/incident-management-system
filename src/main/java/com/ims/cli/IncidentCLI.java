@@ -10,9 +10,31 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+/* TODO: in general classes should be at max of 300 rows for best practice, refactor this class to obtain this result, but since you will switch to
+ spring boot app, is ok. */
+/*
+    TODO: in general this class is named CLI but is not doing only that, for example the method updateIncident() is doing a lot of stuff and it is too long
+    consider creating separate service for the logic, bcause method should be max 30 rows long.
+    also, since it is doing a lot of different stuff, consider creating a method for each of them
+ */
+
+/*
+TODO: in general this class is breaking the SRP principle (single responsability principle) because it does not do one single thing, but:
+    1) input handling (Scanner)
+    2) business logic (validations, SLA logic, updates)
+    3) formatting/output
+    4) orchestration
+    also, in the menu display, you are hardcoding the options "1, 2,3 " ecc... think about using an enum selector class
+  */
 public class IncidentCLI {
-     private final Scanner scanner = new Scanner(System.in);
-     private final IncidentService service = new IncidentService();
+     private final Scanner scanner = new Scanner(System.in); // TODO: avoid using/creating Scanner for both ReportCLI and IncidentCLI
+
+    /*
+       TODO: in general, do not create service classes like this = new Service() but prefer using the singleton design pattern (same for other service classes) focusing on DI (dependency injection principle)
+       p.s. you will see this a lot in spring/spring boot application
+     */
+    private final IncidentService service = new IncidentService();
+
      private final ReportCLI reportCLI = new ReportCLI();
 
      public void start(){
@@ -104,7 +126,7 @@ public class IncidentCLI {
              }
          } while (title.isBlank());
 
-         // Priority
+         // Priority // TODO: what if I add another priority? I will need to remember to update also this menu, please loop the proprity values to dinamically get them
          System.out.println("Select priority:");
          System.out.println("1 -LOW");
          System.out.println("2 -MEDIUM");
@@ -122,6 +144,9 @@ public class IncidentCLI {
                  priority = 0;
              }
 
+         /* TODO: what about adding a property to the enum that will represent the cases?
+            for example: priority value and you get the "LOW, MEDIUM" and so on via 1,2,3 ecc...
+          */
          switch (priority){
              case 1:
                  selectedPriority = Priority.LOW;
@@ -161,6 +186,7 @@ public class IncidentCLI {
                  source = 0;
              }
 
+             // TODO: same thing as above
              switch (source){
                  case 1:
                      selectedSource = IncidentSource.USER_REPORT;
@@ -182,6 +208,7 @@ public class IncidentCLI {
      private void listAllIncidents(){
          List<Incident> incidents = service.allIncidents();
 
+         // TODO: why not use the .toString inside incident? or even better creating a displayservice for incident?
          for (Incident incident :
               incidents) {
                      System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " +
@@ -204,7 +231,7 @@ public class IncidentCLI {
 
           Optional<Incident> incidents = service.getIncidentById(typedInt);
 
-
+            // TODO: please keep an eye on duplicated stuff, we should avoid them to follow the DRY principle
           if (incidents.isPresent()){
 
               Incident incident = incidents.get();
@@ -249,7 +276,7 @@ public class IncidentCLI {
               }else
                   System.out.println("Deletion process cancelled");
 
-
+            // TODO: use always parentheses, even for one line code (good practice)
           }else
               System.out.println("Incident does not exist");
 
@@ -356,6 +383,7 @@ public class IncidentCLI {
                             case 1:
                                 selectedNewStatus = IncidentStatus.ASSIGNED;
 
+                                // TODO: this kind of stuff, are NOT related to display element, this is business logic
                                 if (incident.getAssignedTo() == null || incident.getAssignedTo().isEmpty()) {
 
                                     System.out.println("PLEASE CHANGE ASSIGNED PERSON!");
@@ -519,7 +547,6 @@ public class IncidentCLI {
     }
 
     public void checkSlaStatus() {
-
         Map<SlaStatus, List<Incident>> slaList = service.checkSlaStatus();
         List<Incident> okList = slaList.get(SlaStatus.OK);
         List<Incident> riskList = slaList.get(SlaStatus.AT_RISK);

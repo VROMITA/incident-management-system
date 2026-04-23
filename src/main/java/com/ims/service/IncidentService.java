@@ -2,6 +2,7 @@ package com.ims.service;
 
 import com.ims.model.*;
 import com.ims.repository.IncidentRepository;
+import org.sqlite.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -35,6 +36,7 @@ public class IncidentService {
 
         Incident incident = new Incident(title, priority, source);
 
+        //TODO: it seems that it is returning the same "level" why do not set them as a value of an enum?
         long hours = switch (priority) {
             case CRITICAL -> SlaPolicy.CRITICAL;
             case HIGH -> SlaPolicy.HIGH;
@@ -111,6 +113,7 @@ public class IncidentService {
             throw new IllegalArgumentException("Incident not found");
         }
 
+        // TODO not used
         Incident incident = optional.get();
 
         if (repository.deleteIncident(id)) {
@@ -142,6 +145,8 @@ public class IncidentService {
      *
      * @return a Map with SlaStatus as key and the list of incidents for each status
      */
+    // TODO: I do not like this approach, use a class that have the three list instead of a map OR
+    // use an EnumMap when working with enum and use java stream api to collect/group the item
     public Map<SlaStatus, List<Incident>> checkSlaStatus() {
         logger.info("SLA status check executed");
         // Create 3 Empty List with the assigned status

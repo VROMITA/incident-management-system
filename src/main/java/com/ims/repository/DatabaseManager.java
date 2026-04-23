@@ -4,8 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/* TODO:
+ the singleton here doesn’t add value because the class is stateless and creates a new connection every time.
+ you could simplify this by removing the singleton or move toward dependency injection.
+ */
 public class DatabaseManager {
 
+    // TODO: in general you will see, specially in spring boot, that this kind of info should be stored in properties/env file to avoid exposing sensitive data inside the code directly
     private static final String DB_URL = "jdbc:sqlite:incidents.db";
     private static DatabaseManager instance;
 
@@ -17,6 +22,7 @@ public class DatabaseManager {
 
 
     // getInstance
+    // TODO: this is the singleton pattern
     public static DatabaseManager getInstance() {
         if(instance == null){
             instance = new DatabaseManager();
