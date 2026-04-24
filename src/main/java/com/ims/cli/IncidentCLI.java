@@ -1,18 +1,41 @@
 package com.ims.cli;
 
-import com.ims.model.Incident;
-import com.ims.model.IncidentSource;
-import com.ims.model.IncidentStatus;
-import com.ims.model.Priority;
+import com.ims.model.*;
 import com.ims.service.IncidentService;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+/* TODO: in general classes should be at max of 300 rows for best practice, refactor this class to obtain this result, but since you will switch to
+ spring boot app, is ok. */
+/*
+    TODO: in general this class is named CLI but is not doing only that, for example the method updateIncident() is doing a lot of stuff and it is too long
+    consider creating separate service for the logic, bcause method should be max 30 rows long.
+    also, since it is doing a lot of different stuff, consider creating a method for each of them
+ */
+
+/*
+TODO: in general this class is breaking the SRP principle (single responsability principle) because it does not do one single thing, but:
+    1) input handling (Scanner)
+    2) business logic (validations, SLA logic, updates)
+    3) formatting/output
+    4) orchestration
+    also, in the menu display, you are hardcoding the options "1, 2,3 " ecc... think about using an enum selector class
+  */
 public class IncidentCLI {
-     private Scanner scanner = new Scanner(System.in);
-     private IncidentService service = new IncidentService();
+     private final Scanner scanner = new Scanner(System.in); // TODO: avoid using/creating Scanner for both ReportCLI and IncidentCLI
+
+    /*
+       TODO: in general, do not create service classes like this = new Service() but prefer using the singleton design pattern (same for other service classes) focusing on DI (dependency injection principle)
+       p.s. you will see this a lot in spring/spring boot application
+     */
+    private final IncidentService service = new IncidentService();
+
+     private final ReportCLI reportCLI = new ReportCLI();
 
      public void start(){
          System.out.println("Welcome to the Incident Management System\n");
@@ -30,10 +53,18 @@ public class IncidentCLI {
              System.out.println("3 - Find an incident by ID");
              System.out.println("4 - Delete an incident");
              System.out.println("5 - Update an incident");
-             System.out.println("6 - Exit");
+             System.out.println("6 - Check SLA status");
+             System.out.println("7 - Report options");
+             System.out.println("8 - Exit");
 
              System.out.println("Choose an option: ");
-             input = Integer.parseInt(scanner.nextLine());
+
+             try {
+                 input = Integer.parseInt(scanner.nextLine());
+             } catch (NumberFormatException e) {
+                 System.out.println("Invalid input. Please enter a number.");
+                 input = 0;
+             }
 
              switch (input){
 
@@ -58,13 +89,22 @@ public class IncidentCLI {
                      break;
 
                  case 6:
+                     checkSlaStatus();
                      break;
+
+                 case 7:
+                     reportCLI.start();
+                     break;
+
+                 case 8 :
+                     break;
+
 
                  default:
                      System.out.println("Invalid option. Try again.\n");
              }
 
-         }while (input !=6 );
+         }while (input !=8 );
 
          System.out.println("Bye Bye!\n");
 
@@ -77,10 +117,16 @@ public class IncidentCLI {
          // Start fill out data
 
          // Title
-         System.out.println("Choose a title: ");
-         String title = scanner.nextLine();
+         String title;
+         do {
+             System.out.println("Choose a title: ");
+             title = scanner.nextLine().trim();
+             if (title.isBlank()) {
+                 System.out.println("Title cannot be empty. Try again.");
+             }
+         } while (title.isBlank());
 
-         // Priority
+         // Priority // TODO: what if I add another priority? I will need to remember to update also this menu, please loop the proprity values to dinamically get them
          System.out.println("Select priority:");
          System.out.println("1 -LOW");
          System.out.println("2 -MEDIUM");
@@ -91,9 +137,16 @@ public class IncidentCLI {
          Priority selectedPriority = null;
 
          do {
+             try {
+                 priority = Integer.parseInt(scanner.nextLine());
+             } catch (NumberFormatException e) {
+                 System.out.println("Invalid input. Please enter a number.");
+                 priority = 0;
+             }
 
-             priority = Integer.parseInt(scanner.nextLine());
-
+         /* TODO: what about adding a property to the enum that will represent the cases?
+            for example: priority value and you get the "LOW, MEDIUM" and so on via 1,2,3 ecc...
+          */
          switch (priority){
              case 1:
                  selectedPriority = Priority.LOW;
@@ -113,7 +166,7 @@ public class IncidentCLI {
 
          }
 
-         }while (priority < 1 || priority > 3);
+         }while (priority < 1 || priority > 4);
 
 
          // Source
@@ -126,8 +179,14 @@ public class IncidentCLI {
 
          do {
 
-             source = Integer.parseInt(scanner.nextLine());
+             try {
+                 source = Integer.parseInt(scanner.nextLine());
+             } catch (NumberFormatException e) {
+                 System.out.println("Invalid input. Please enter a number.");
+                 source = 0;
+             }
 
+             // TODO: same thing as above
              switch (source){
                  case 1:
                      selectedSource = IncidentSource.USER_REPORT;
@@ -149,9 +208,11 @@ public class IncidentCLI {
      private void listAllIncidents(){
          List<Incident> incidents = service.allIncidents();
 
+         // TODO: why not use the .toString inside incident? or even better creating a displayservice for incident?
          for (Incident incident :
               incidents) {
-             System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getStatus() + " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
+                     System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " +
+                     incident.getStatus() + " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
           }
       }
 
@@ -160,11 +221,17 @@ public class IncidentCLI {
          int typedInt;
           System.out.println("Search an incident");
           System.out.println("Please type an ID: ");
-          typedInt = Integer.parseInt(scanner.nextLine());
+
+          try {
+              typedInt = Integer.parseInt(scanner.nextLine());
+          } catch (NumberFormatException e) {
+              System.out.println("Invalid input. Please enter a number.");
+              typedInt = -1;
+          }
 
           Optional<Incident> incidents = service.getIncidentById(typedInt);
 
-
+            // TODO: please keep an eye on duplicated stuff, we should avoid them to follow the DRY principle
           if (incidents.isPresent()){
 
               Incident incident = incidents.get();
@@ -186,7 +253,13 @@ public class IncidentCLI {
 
           System.out.println("Incident Deletion");
           System.out.println("Please type an ID ");
-          typedInt = Integer.parseInt(scanner.nextLine());
+
+          try {
+              typedInt = Integer.parseInt(scanner.nextLine());
+          } catch (NumberFormatException e) {
+              System.out.println("Invalid input. Please enter a number.");
+              typedInt = -1;
+          }
 
           Optional<Incident> incidents = service.getIncidentById(typedInt);
 
@@ -203,7 +276,7 @@ public class IncidentCLI {
               }else
                   System.out.println("Deletion process cancelled");
 
-
+            // TODO: use always parentheses, even for one line code (good practice)
           }else
               System.out.println("Incident does not exist");
 
@@ -216,7 +289,14 @@ public class IncidentCLI {
 
         System.out.println("\nUpdate Incident Information");
         System.out.println("Please type an ID: ");
-        int typedInt = Integer.parseInt(scanner.nextLine());
+        int typedInt;
+
+        try {
+            typedInt = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            typedInt = -1;
+        }
 
         Optional<Incident> incidents = service.getIncidentById(typedInt);
 
@@ -243,15 +323,26 @@ public class IncidentCLI {
             System.out.println("7 - Close incident");
             System.out.println("8 - Exit");
 
-            updateChoiceInput = Integer.parseInt(scanner.nextLine());
+                try {
+                    updateChoiceInput = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number.");
+                    updateChoiceInput = -1;
+                }
 
             switch (updateChoiceInput){
 
                 // UPDATE TITLE
                 case 1:
 
-                    System.out.println("Update title:");
-                    String newTitle = scanner.nextLine();
+                    String newTitle;
+                    do {
+                        System.out.println("Update title:");
+                        newTitle = scanner.nextLine().trim();
+                        if (newTitle.isBlank()) {
+                            System.out.println("Title cannot be empty. Try again.");
+                        }
+                    } while (newTitle.isBlank());
                     incident.setTitle(newTitle);
 
                     break;
@@ -281,15 +372,22 @@ public class IncidentCLI {
 
                     do {
 
-                        status = Integer.parseInt(scanner.nextLine());
+                        try {
+                            status = Integer.parseInt(scanner.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a number.");
+                            status = 0;
+                        }
 
                         switch (status){
                             case 1:
                                 selectedNewStatus = IncidentStatus.ASSIGNED;
 
-                                if (incident.getAssignedTo() == null || incident.getAssignedTo().isEmpty())
+                                // TODO: this kind of stuff, are NOT related to display element, this is business logic
+                                if (incident.getAssignedTo() == null || incident.getAssignedTo().isEmpty()) {
 
-                                System.out.println("PLEASE CHANGE ASSIGNED PERSON!");
+                                    System.out.println("PLEASE CHANGE ASSIGNED PERSON!");
+                                }
 
                                 break;
                             case 2:
@@ -330,8 +428,13 @@ public class IncidentCLI {
                     Priority selectedNewPriority = null;
 
                     do {
+                            try {
+                                priority = Integer.parseInt(scanner.nextLine());
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a number.");
+                                priority = 0;
+                            }
 
-                        priority = Integer.parseInt(scanner.nextLine());
 
                         switch (priority){
                             case 1:
@@ -369,7 +472,12 @@ public class IncidentCLI {
 
                     do {
 
-                        source = Integer.parseInt(scanner.nextLine());
+                        try {
+                            source = Integer.parseInt(scanner.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a number.");
+                            source = 0;
+                        }
 
                         switch (source){
                             case 1:
@@ -396,7 +504,7 @@ public class IncidentCLI {
 
                     break;
 
-                // EXIT
+                // CLOSE
                 case 7:
 
                     System.out.println("Are you sure you want to close the incident? y/n");
@@ -411,10 +519,12 @@ public class IncidentCLI {
                         } catch (IllegalArgumentException e) {
                             System.out.println("Error: " + e.getMessage());
                         }
-                    }
+                    }else
+                        System.out.println("Incident closure cancelled");
 
                     break;
 
+                    // EXIT
                 case 8:
 
                     break;
@@ -435,5 +545,56 @@ public class IncidentCLI {
 
             System.out.println("No incident found");
     }
+
+    public void checkSlaStatus() {
+        Map<SlaStatus, List<Incident>> slaList = service.checkSlaStatus();
+        List<Incident> okList = slaList.get(SlaStatus.OK);
+        List<Incident> riskList = slaList.get(SlaStatus.AT_RISK);
+        List<Incident> breachList = slaList.get(SlaStatus.BREACH);
+
+        System.out.println("Report SLA status");
+        System.out.println("─────────────────────────────");
+        System.out.println("✅ OK STATUS: ");
+        if (okList.isEmpty()) {
+            System.out.println("No incidents in OK status");
+        } else {
+            for (Incident incident : okList) {
+
+                long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), incident.getSlaDeadline());
+                System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getPriority() + " | " + "expire in " + hoursLeft + " hours");
+            }
+        }
+
+        System.out.println("─────────────────────────────");
+        System.out.println("⚠️ RISK STATUS: ");
+
+        if (riskList.isEmpty()) {
+
+            System.out.println("No incidents at Risk status");
+
+        } else
+            for (Incident incident : riskList) {
+
+                long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), incident.getSlaDeadline());
+
+                System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getPriority() + " | " + "expire in " + hoursLeft + " hours");
+
+            }
+
+        System.out.println("─────────────────────────────");
+        System.out.println("\uD83D\uDD34 BREACH STATUS: ");
+
+        if (breachList.isEmpty()) {
+            System.out.println("No breach ");
+        } else
+
+            for (Incident incident : breachList) {
+
+                long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), incident.getSlaDeadline());
+
+                System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | overdue since " + Math.abs(hoursLeft) + " hours");
+            }
+     }
+
 
 }

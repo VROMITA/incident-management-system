@@ -23,12 +23,24 @@ The project follows a layered architecture:
 
 ## Features
 
+### v1.0 - CLI Core
 - Create a new incident
 - View all incidents
 - Find an incident by ID
 - Delete an incident
 - Update an incident (title, description, status, priority, source, assigned to)
 - Close an incident with validation
+
+### v2.0 - SLA Monitor
+- Automatic SLA deadline calculation based on priority
+- Real-time SLA classification (OK, AT RISK, BREACH)
+- SLA status report from CLI
+
+### v2.1 - Validation + Logging
+- Input validation on all numeric inputs (NumberFormatException handling)
+- Empty title validation with loop in create and update
+- Operational logging via java.util.logging (INFO, WARNING)
+- Javadoc on all public methods (Service, Repository, SlaMonitor)
 
 ## Getting Started
 
@@ -41,7 +53,12 @@ The project follows a layered architecture:
 
 ## Roadmap
 
-- **v1.0** ✅ CLI core - create, view, find, update, delete, close incidents
-- **v2.0** 🔄 SLA Monitor - track and alert on incident resolution deadlines + comments system
-- **v3.0** 📊 Reports - incident statistics and export
-- **v4.0** 🚀 Spring Boot REST API - migrate to web API with PostgreSQL
+- **v1.0** ✅ | Released | CLI core
+- **v2.0** ✅ | Released | SLA Monitor
+- **v2.1** ✅ | Released | Validation + Logging + Javadoc
+- **v3.0** 🔄 | Planned  | Reports - incident statistics
+- **v4.0** 🚀 | Planned  | Spring Boot REST API + PostgreSQL
+
+## Planned Improvements
+
+- **v3.5** Comment System
