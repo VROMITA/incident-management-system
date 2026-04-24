@@ -4,6 +4,13 @@ A CLI-based Incident Management System for support and development teams
 to track, manage, and resolve incidents, inspired by real-world workflows
 from tools like Jira and Salesforce.
 
+## Background
+
+Built by a professional with hands-on experience in L1/L2/L3 support
+operations using Jira and Salesforce. The domain model and workflows
+(SLA monitoring, incident escalation, closing comments) reflect real
+support processes rather than generic CRUD examples.
+
 ## Technologies
 
 - Java 21
@@ -42,6 +49,13 @@ The project follows a layered architecture:
 - Operational logging via java.util.logging (INFO, WARNING)
 - Javadoc on all public methods (Service, Repository, SlaMonitor)
 
+### v3.0 - Reporting
+- Count incidents by Status
+- Count incidents by Priority
+- Average resolution time calculation
+- Incidents by date range with input validation
+- Business logic validation (start date cannot be after end date)
+
 ## Getting Started
 
 1. Clone the repository
@@ -56,9 +70,7 @@ The project follows a layered architecture:
 - **v1.0** ✅ | Released | CLI core
 - **v2.0** ✅ | Released | SLA Monitor
 - **v2.1** ✅ | Released | Validation + Logging + Javadoc
-- **v3.0** 🔄 | Planned  | Reports - incident statistics
+- **v3.0** ✅ | Released | Reporting - incident statistics + date range + validation
+- **v3.1** 🔄 | Planned  | SRP Refactor + Code Quality
+- **v3.5** 💬 | Planned  | Comment System
 - **v4.0** 🚀 | Planned  | Spring Boot REST API + PostgreSQL
-
-## Planned Improvements
-
-- **v3.5** Comment System
