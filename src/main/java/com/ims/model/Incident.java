@@ -132,7 +132,9 @@ endDate     → LocalDateTime
         return "[" + id + "] " + title +
                 " | Status: " + status +
                 " | Priority: " + priority +
-                " | Assigned: " + assignedTo;
+                " | Assigned: " + assignedTo +
+                " | Start date: " + startDate +
+                " | End date: " + endDate
     }
 }
 

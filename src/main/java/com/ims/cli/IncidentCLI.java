@@ -208,11 +208,10 @@ public class IncidentCLI {
      private void listAllIncidents(){
          List<Incident> incidents = service.allIncidents();
 
-         // TODO: why not use the .toString inside incident? or even better creating a displayservice for incident?
+         // ✅ DONE: why not use the .toString inside incident? or even better creating a displayservice for incident?
          for (Incident incident :
               incidents) {
-                     System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " +
-                     incident.getStatus() + " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
+             System.out.println(incident.toString());
           }
       }
 
@@ -276,9 +275,13 @@ public class IncidentCLI {
               }else
                   System.out.println("Deletion process cancelled");
 
-            // TODO: use always parentheses, even for one line code (good practice)
-          }else
+            // DONE: use always parentheses, even for one line code (good practice)
+          }else{
+
               System.out.println("Incident does not exist");
+
+          }
+
 
       }
 
@@ -535,8 +538,9 @@ public class IncidentCLI {
 
             }
 
-            if(!skipUpdate)
+            if(!skipUpdate){
             service.updateIncident(incident);
+            }
 
             }while (updateChoiceInput !=8 );
 
