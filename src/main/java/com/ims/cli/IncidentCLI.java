@@ -240,8 +240,12 @@ public class IncidentCLI {
               System.out.println("Assigned to: " + incident.getAssignedTo() + " | Start date: " + incident.getStartDate() + " | End Date: " + incident.getEndDate());
               System.out.println("Description \n" + incident.getDescription());
 
-          }else
+          }else{
+
               System.out.println("Incident not found");
+
+          }
+
       }
 
 
@@ -272,8 +276,11 @@ public class IncidentCLI {
               if(deletionInput.equals("y")){
                   service.deleteIncident(typedInt);
                   System.out.println("Incident " + incident.getId() + " Cancelled");
-              }else
+              }else{
+
                   System.out.println("Deletion process cancelled");
+              }
+
 
             // DONE: use always parentheses, even for one line code (good practice)
           }else{
@@ -522,8 +529,12 @@ public class IncidentCLI {
                         } catch (IllegalArgumentException e) {
                             System.out.println("Error: " + e.getMessage());
                         }
-                    }else
+                    }else{
+
                         System.out.println("Incident closure cancelled");
+
+                    }
+
 
                     break;
 
@@ -539,15 +550,19 @@ public class IncidentCLI {
             }
 
             if(!skipUpdate){
+
             service.updateIncident(incident);
             }
 
             }while (updateChoiceInput !=8 );
 
-
-        }else
+        }else{
 
             System.out.println("No incident found");
+
+        }
+
+
     }
 
     public void checkSlaStatus() {
@@ -576,7 +591,8 @@ public class IncidentCLI {
 
             System.out.println("No incidents at Risk status");
 
-        } else
+        } else{
+
             for (Incident incident : riskList) {
 
                 long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), incident.getSlaDeadline());
@@ -585,12 +601,16 @@ public class IncidentCLI {
 
             }
 
+
+        }
+
+
         System.out.println("─────────────────────────────");
         System.out.println("\uD83D\uDD34 BREACH STATUS: ");
 
         if (breachList.isEmpty()) {
             System.out.println("No breach ");
-        } else
+        } else {
 
             for (Incident incident : breachList) {
 
@@ -598,6 +618,10 @@ public class IncidentCLI {
 
                 System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | overdue since " + Math.abs(hoursLeft) + " hours");
             }
+
+        }
+
+
      }
 
 
