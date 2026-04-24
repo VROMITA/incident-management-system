@@ -7,12 +7,12 @@
 
 A Java Incident Management System that translates years of enterprise
 support experience into production-grade code. Built in progressive
-milestones — mastering JDBC and layered architecture fundamentals
+milestones, mastering JDBC and layered architecture fundamentals
 before abstracting them with Spring Boot.
 
 ## Background
 
-Built by a professional with 4+ years of hands-on L1/L2/L3 support
+Built by a professional with multiple years of hands-on L1/L2/L3 support
 experience in an enterprise IoT environment, using Jira and Salesforce
 daily. The domain model and workflows (SLA monitoring, incident
 escalation, closing comments) come from real support processes, not
@@ -43,11 +43,12 @@ The project follows a layered architecture:
 - Find an incident by ID
 - Delete an incident
 - Update an incident (title, description, status, priority, source, assigned to)
-- Close an incident with validation
+- Close an incident with business validation
+- Persistent storage via SQLite (embedded, zero configuration)
 
 ### v2.0 - SLA Monitor
 - Automatic SLA deadline calculation based on priority
-- Real-time SLA classification (OK, AT RISK, BREACH)
+- SLA status classification on incident retrieval (OK / AT RISK / BREACH)
 - SLA status report from CLI
 
 ### v2.1 - Validation + Logging
@@ -57,8 +58,7 @@ The project follows a layered architecture:
 - Javadoc on all public methods (Service, Repository, SlaMonitor)
 
 ### v3.0 - Reporting
-- Count incidents by Status
-- Count incidents by Priority
+- Incident volume breakdown by status and priority
 - Average resolution time calculation
 - Incidents by date range with input validation
 - Business logic validation (start date cannot be after end date)
@@ -74,10 +74,20 @@ The project follows a layered architecture:
 
 ## Roadmap
 
-- **v1.0** ✅ | Released | CLI core
-- **v2.0** ✅ | Released | SLA Monitor
-- **v2.1** ✅ | Released | Validation + Logging + Javadoc
-- **v3.0** ✅ | Released | Reporting - incident statistics + date range + validation
-- **v3.1** 🔄 | Planned  | SRP Refactor + Code Quality
-- **v3.5** 💬 | Planned  | Comment System
-- **v4.0** 🚀 | Planned  | Spring Boot REST API + PostgreSQL
+- ✅ **v1.0** — CLI Core
+- ✅ **v2.0** — SLA Monitoring
+- ✅ **v2.1** — Validation + Logging + Javadoc
+- ✅ **v3.0** — Reporting - incident statistics, date range filters, validation
+- 🔄 **v3.1** — Code Quality Refactor - apply Single Responsibility Principle across service and repository layers
+- 💬 **v3.5** — Comment System
+- 🚀 **v4.0** — Spring Boot REST API + PostgreSQL
+
+## Architecture
+
+Layered architecture with clear separation of concerns. The CLI is a temporary presentation layer, in v4.0 it will be replaced by REST endpoints without touching the service or repository layers.
+
+## About
+
+Built by **Valerio Romita** — Application Support Specialist transitioning to Java Backend Development.
+
+💼 [LinkedIn](https://www.linkedin.com/in/valerio-romita)
