@@ -252,7 +252,6 @@ public class IncidentCLI {
 
       }
 
-
       private void deleteIncidentById(){
 
          int typedInt;
@@ -373,60 +372,16 @@ public class IncidentCLI {
                 // UPDATE STATUS
                 case 3:
 
-                    System.out.println("Update status:");
-                    System.out.println("1 - ASSIGNED");
-                    System.out.println("2 - ESCALATED");
-                    System.out.println("3 - IN PROGRESS");
-                    System.out.println("4 - TESTING");
-                    System.out.println("5 - REOPENED");
-                    System.out.println("6 - Exit");
+                    IncidentStatus selectedStatus = askUpdateStatus();
 
-                    int status;
-                    IncidentStatus selectedNewStatus = null;
+                    if (selectedStatus != null) {
+                        incident.setStatus(selectedStatus);
+                    } else {
+                        System.out.println("Status update cancelled");
+                        skipUpdate = true;
+                    }
 
-                    do {
-
-                        try {
-                            status = Integer.parseInt(scanner.nextLine());
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter a number.");
-                            status = 0;
-                        }
-
-                        switch (status){
-                            case 1:
-                                selectedNewStatus = IncidentStatus.ASSIGNED;
-
-                                // TODO: this kind of stuff, are NOT related to display element, this is business logic
-                                if (incident.getAssignedTo() == null || incident.getAssignedTo().isEmpty()) {
-
-                                    System.out.println("PLEASE CHANGE ASSIGNED PERSON!");
-                                }
-
-                                break;
-                            case 2:
-                                selectedNewStatus = IncidentStatus.ESCALATED;
-                                break;
-                            case 3:
-                                selectedNewStatus = IncidentStatus.IN_PROGRESS;
-                                break;
-                            case 4:
-                                selectedNewStatus = IncidentStatus.TESTING;
-                                break;
-                            case 5:
-                                selectedNewStatus = IncidentStatus.REOPENED;
-                                break;
-                            case 6:
-                                break;
-                            default:
-                                System.out.println("Invalid choice, try again!\n");
-
-                        }
-
-                    }while (status < 1 || status > 6);
-
-                    incident.setStatus(selectedNewStatus);
-
+              // DONE -- MOVED TO IncidentService --  this kind of stuff, are NOT related to display element, this is business logic!
                     break;
 
                 // UPDATE PRIORITY
@@ -582,6 +537,8 @@ public class IncidentCLI {
 
         }
 
+
+
         int choice = 0;
         Priority selectedPriority = null;
 
@@ -601,8 +558,55 @@ public class IncidentCLI {
 
         } while (selectedPriority == null);
 
-
             return selectedPriority;
+
+    }
+
+    public IncidentStatus askUpdateStatus(){
+
+        System.out.println("Update status:");
+
+        IncidentStatus[] statusList = {
+                IncidentStatus.ASSIGNED,
+                IncidentStatus.ESCALATED,
+                IncidentStatus.IN_PROGRESS,
+                IncidentStatus.TESTING,
+                IncidentStatus.REOPENED
+        };
+
+        for(int i = 0; i < statusList.length; i++){
+
+            System.out.println((i+1) + " - " + statusList[i].getDisplayName());
+
+        }
+        System.out.println("6 - Exit");
+
+        int choice = 0;
+        IncidentStatus selectedStatus = null;
+
+        do {
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+
+            }catch (NumberFormatException e){
+
+                System.out.println("Invalid input. Please try again!");
+            }
+               if (choice == 6){
+                   return null;
+
+               } else if(choice >= 1 && choice <= 5) {
+
+                   selectedStatus = statusList[choice - 1];
+
+               }else {
+                   System.out.println("Invalid choice, try again");
+               }
+
+        } while (selectedStatus == null);
+
+        return selectedStatus;
+
     }
 
     public void checkSlaStatus() {
