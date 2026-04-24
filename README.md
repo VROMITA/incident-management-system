@@ -5,9 +5,8 @@
 ![Release](https://img.shields.io/github/v/release/VROMITA/incident-management-system)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-A Java Incident Management System that translates years of enterprise
-support experience into production-grade code. Built in progressive
-milestones, mastering JDBC and layered architecture fundamentals
+A Java Incident Management System that translates years of enterprise support experience into code.
+Built in progressive milestones, mastering JDBC and layered architecture fundamentals
 before abstracting them with Spring Boot.
 
 ## Background
@@ -20,11 +19,9 @@ textbook examples.
 
 ## Technologies
 
-- Java 21
-- SQLite
-- JDBC
-- Maven
-- Git & GitHub
+- **Java 21 LTS** — Core language
+- **Maven 3.9** — Build automation and dependency management
+- **SQLite via JDBC** — Embedded database (manual connection management)
 
 ## Architecture
 
@@ -65,10 +62,14 @@ The project follows a layered architecture:
 
 ## Getting Started
 
-1. Clone the repository
-2. Open with any Maven-compatible IDE
-3. Maven will download dependencies automatically
-4. Run `Main.java`
+### Prerequisites
+- Java 21 or higher
+- Maven 3.9+
+
+### Run
+```bash
+mvn clean compile exec:java
+```
 
 > No database configuration needed, SQLite is embedded.
 
