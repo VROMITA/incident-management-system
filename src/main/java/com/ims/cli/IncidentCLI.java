@@ -127,7 +127,7 @@ public class IncidentCLI {
          } while (title.isBlank());
 
          // Priority // TODO: what if I add another priority? I will need to remember to update also this menu, please loop the proprity values to dinamically get them
-         System.out.println("Select priority:");
+         /* TEST System.out.println("Select priority:");
          System.out.println("1 -LOW");
          System.out.println("2 -MEDIUM");
          System.out.println("3 -HIGH");
@@ -144,9 +144,11 @@ public class IncidentCLI {
                  priority = 0;
              }
 
-         /* TODO: what about adding a property to the enum that will represent the cases?
+          TODO: what about adding a property to the enum that will represent the cases?
             for example: priority value and you get the "LOW, MEDIUM" and so on via 1,2,3 ecc...
-          */
+
+
+
          switch (priority){
              case 1:
                  selectedPriority = Priority.LOW;
@@ -167,7 +169,9 @@ public class IncidentCLI {
          }
 
          }while (priority < 1 || priority > 4);
+*/
 
+         Priority selectedPriority  = askForPriority();
 
          // Source
          System.out.println("Select the source: \n");
@@ -565,6 +569,42 @@ public class IncidentCLI {
 
     }
 
+    public Priority askForPriority(){
+
+        System.out.println("Select priority:");
+
+        Priority[] priorities = Priority.values();
+
+       // Loop for priority options
+        for (Priority priority : priorities) {
+
+            System.out.println(priority.getMenuOrder() + " - " + priority.getDisplayName());
+
+        }
+
+        int choice = 0;
+        Priority selectedPriority = null;
+
+        do {
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+
+            }catch (NumberFormatException e){
+                System.out.println("Invalid input. Please try again");
+
+            }
+            if (choice >= 1 && choice <= priorities.length){
+                selectedPriority = priorities[choice-1];
+            }else{
+                System.out.println("Invalid choice, try again");
+            }
+
+        } while (selectedPriority == null);
+
+
+            return selectedPriority;
+    }
+
     public void checkSlaStatus() {
         Map<SlaStatus, List<Incident>> slaList = service.checkSlaStatus();
         List<Incident> okList = slaList.get(SlaStatus.OK);
@@ -623,6 +663,8 @@ public class IncidentCLI {
 
 
      }
+
+
 
 
 }

@@ -134,7 +134,7 @@ endDate     → LocalDateTime
                 " | Priority: " + priority +
                 " | Assigned: " + assignedTo +
                 " | Start date: " + startDate +
-                " | End date: " + endDate
+                " | End date: " + endDate;
     }
 }
 
