@@ -596,15 +596,5 @@ public class IncidentCLI {
             }
      }
 
-/*
-     // ADD COMMENT LATER
-     private int readInt(String prompt){
-         while(true){
-             System.out.println(prompt);
-             String raw = scanner.nextLine().trim()
-         }
-     }
-
- */
 
 }

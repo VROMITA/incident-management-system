@@ -32,7 +32,7 @@ public class IncidentRepository {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""; // text block instead of concatenation
 
          // Delivery the query to the DB
-       try(Connection conn = dbManager.getConnection();PreparedStatement stmt = conn.prepareStatement(sql, new String[]{"id"});) {
+       try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, new String[]{"id"});) {
              // RETURN_GENERATED_KEYS keeps in memory the generated ID which will be retried with getGeneratedKeys
 
            // Assign all the ? to the attributes
@@ -52,6 +52,7 @@ public class IncidentRepository {
 
            // ResultSet is an object which represent the query result.
            ResultSet keys = conn.prepareStatement("SELECT last_insert_rowid()").executeQuery();
+
            if(keys.next()){
                incident.setId(keys.getInt(1));
            }

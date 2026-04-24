@@ -5,6 +5,7 @@ import com.ims.service.ReportService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -28,8 +29,8 @@ public class ReportCLI {
         do {
             System.out.println("\n1 - View report by Status");
             System.out.println("2 - View report by Priority");
-            System.out.println("3  - View report of resolution time");
-            System.out.println("4 - - View report by selected timeframe");
+            System.out.println("3 - View report of resolution time");
+            System.out.println("4 - View report by selected timeframe");
             System.out.println("0 - Exit");
 
             System.out.println("Choose an option: ");
@@ -105,17 +106,34 @@ public class ReportCLI {
 
         System.out.println("Please select the timestamp - format YYYY-MM-DD");
 
-        System.out.println("FROM: ");
+        LocalDate fromDate = null;
+        do {
+            System.out.println("FROM (format YYYY-MM-DD): ");
+            try {
+                fromDate = LocalDate.parse(scanner.nextLine());
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid format. Use YYYY-MM-DD. Try again.");
+            }
+        } while (fromDate == null);
 
-        LocalDate fromDate = LocalDate.parse(scanner.nextLine());
+
+        LocalDate toDate = null;
+
+        do {
+            System.out.println("TO (format YYYY-MM-DD): ");
+            try {
+                toDate = LocalDate.parse(scanner.nextLine());
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid format. Use YYYY-MM-DD. Try again.");
+            }
+        } while (toDate == null);
+
         LocalDateTime from = fromDate.atStartOfDay();
+        LocalDateTime to = toDate.atTime(23, 59, 59);
 
-        System.out.println("TO: ");
+        try {
 
-        LocalDate toDate = LocalDate.parse(scanner.nextLine());
-        LocalDateTime to = toDate.atTime(23, 59);
-
-        List<Incident> listIncidentByRange = report.getIncidentByDateRange(from, to);
+            List<Incident> listIncidentByRange = report.getIncidentByDateRange(from, to);
 
         if (listIncidentByRange.isEmpty()){
             System.out.println("No incident in this timeframe");
@@ -126,6 +144,9 @@ public class ReportCLI {
 
             System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " + incident.getStatus() +
                     " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
+        }
+        }catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
         }
 
     }

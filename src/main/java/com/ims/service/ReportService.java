@@ -2,9 +2,7 @@ package com.ims.service;
 
 import com.ims.model.Incident;
 import com.ims.repository.IncidentRepository;
-
 import java.time.LocalDateTime;
-import java.util.Formattable;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +16,6 @@ public class ReportService {
 
     }
 
-
     public Map<String, Integer> getStatusReport(){
 
         return  repository.countByStatus();
@@ -27,14 +24,6 @@ public class ReportService {
 
     public Map<String, Integer>  getPriorityReport(){
 
-
-
-        /* System.out.println("=== INCIDENTS BY PRIORITY ===");
-
-        for (Map.Entry<String, Integer> entry : priorityMap.entrySet()){
-
-            System.out.println( entry.getKey() + " : " + entry.getValue() );
-*/
         return repository.countByPriority();
         }
 
@@ -46,9 +35,10 @@ public class ReportService {
 
     public List<Incident> getIncidentByDateRange(LocalDateTime from, LocalDateTime to){
 
+        if (from.isAfter(to)) {
+            throw new IllegalArgumentException("Start date cannot be after end date");
+        }
         return repository.getIncidentByRangeDate(from, to);
-
-
         }
 
 }
