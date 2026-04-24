@@ -1,15 +1,22 @@
 # Incident Management System (IMS)
 
-A CLI-based Incident Management System for support and development teams
-to track, manage, and resolve incidents, inspired by real-world workflows
-from tools like Jira and Salesforce.
+![Java](https://img.shields.io/badge/Java-21_LTS-orange?logo=openjdk)
+![Maven](https://img.shields.io/badge/Maven-3.9-blue?logo=apachemaven)
+![Release](https://img.shields.io/github/v/release/VROMITA/incident-management-system)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+A Java Incident Management System that translates years of enterprise
+support experience into production-grade code. Built in progressive
+milestones — mastering JDBC and layered architecture fundamentals
+before abstracting them with Spring Boot.
 
 ## Background
 
-Built by a professional with hands-on experience in L1/L2/L3 support
-operations using Jira and Salesforce. The domain model and workflows
-(SLA monitoring, incident escalation, closing comments) reflect real
-support processes rather than generic CRUD examples.
+Built by a professional with 4+ years of hands-on L1/L2/L3 support
+experience in an enterprise IoT environment, using Jira and Salesforce
+daily. The domain model and workflows (SLA monitoring, incident
+escalation, closing comments) come from real support processes, not
+textbook examples.
 
 ## Technologies
 
