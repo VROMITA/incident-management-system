@@ -129,10 +129,9 @@ endDate     → LocalDateTime
 
     @Override
     public String toString() {
-        return "[" + id + "] " + title +
-                " | Status: " + status +
-                " | Priority: " + priority +
-                " | Assigned: " + assignedTo;
+        return "[" + id + "] " + title + " | " +
+                status + " | " + priority + " | " +
+                startDate + " | " + endDate;
     }
 }
 

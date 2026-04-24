@@ -211,8 +211,7 @@ public class IncidentCLI {
          // TODO: why not use the .toString inside incident? or even better creating a displayservice for incident?
          for (Incident incident :
               incidents) {
-                     System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | " +
-                     incident.getStatus() + " | " + incident.getPriority() + " | " + incident.getStartDate() + " | " + incident.getEndDate());
+             System.out.println(incident.toString());
           }
       }
 
