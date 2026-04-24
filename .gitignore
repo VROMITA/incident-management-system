@@ -40,3 +40,7 @@ build/
 
 ### DB ###
 incidents.db
+
+# IntelliJ IDEA
+.idea/
+*.iml
