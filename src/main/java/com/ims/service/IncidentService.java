@@ -136,9 +136,7 @@ public class IncidentService {
         }else {
             logger.warning("Incident NOT updated: ID= " + incident.getId());
         }
-        if(incident.getAssignedTo().isEmpty() && incident.getStatus() == IncidentStatus.ASSIGNED){
-            System.out.println("PLEASE ASSIGN THE RESPONSIBLE PERSON!");
-        }
+
 
     }
 

@@ -5,19 +5,13 @@ import com.ims.model.IncidentSource;
 import com.ims.model.IncidentStatus;
 import com.ims.model.Priority;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class IncidentRepository {
 
-    private final DatabaseManager dbManager;
-
-
-    // Call of the DB Manager
-    public IncidentRepository(){
-             this.dbManager = DatabaseManager.getInstance();
-    }
 
 
     /**
@@ -32,7 +26,7 @@ public class IncidentRepository {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""; // text block instead of concatenation
 
          // Delivery the query to the DB
-       try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, new String[]{"id"});) {
+       try(Connection conn = DatabaseManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, new String[]{"id"});) {
              // RETURN_GENERATED_KEYS keeps in memory the generated ID which will be retried with getGeneratedKeys
 
            // Assign all the ? to the attributes
@@ -72,7 +66,7 @@ public class IncidentRepository {
         List<Incident> incidents = new ArrayList<>();
         String sql = "SELECT * FROM incidents";
 
-        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery();) {
+        try(Connection conn = DatabaseManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery();) {
 
 
 
@@ -129,7 +123,7 @@ public class IncidentRepository {
 
         String sql = "SELECT * FROM incidents where id = ?";
 
-        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ) {
+        try(Connection conn = DatabaseManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ) {
 
             stmt.setInt(1, id);
 
@@ -186,7 +180,7 @@ public class IncidentRepository {
                 WHERE id = ?
                 """;
 
-        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ) {
+        try(Connection conn = DatabaseManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ) {
 
 
             stmt.setString(1, incident.getTitle());
@@ -220,7 +214,7 @@ public class IncidentRepository {
 
         String sql = "DELETE FROM incidents WHERE id = ?";
 
-        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);) {
+        try(Connection conn = DatabaseManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);) {
 
             stmt.setInt(1, id);
             int rows = stmt.executeUpdate();
@@ -243,7 +237,7 @@ public class IncidentRepository {
         Map<String, Integer> statusList = new HashMap<>();
 
         // try-with-resources
-        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);
+        try(Connection conn = DatabaseManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
 
             while(rs.next()){
@@ -266,7 +260,7 @@ public class IncidentRepository {
         String sql ="SELECT priority, COUNT(*) as total FROM incidents GROUP BY priority";
         Map<String, Integer> priorityList = new HashMap<>();
 
-        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);
+        try(Connection conn = DatabaseManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()){
@@ -287,7 +281,7 @@ public class IncidentRepository {
 
         float averageTime = 0;
 
-        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()){
+        try(Connection conn = DatabaseManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()){
 
             if (rs.next()){
 
@@ -310,7 +304,7 @@ public class IncidentRepository {
 
 
 
-        try(Connection conn = dbManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)){
+        try(Connection conn = DatabaseManager.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)){
 
             stmt.setString(1, from.toString());
             stmt.setString(2, to.toString());

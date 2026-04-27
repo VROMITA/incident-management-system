@@ -127,49 +127,10 @@ public class IncidentCLI {
          } while (title.isBlank());
 
          // Priority // TODO: what if I add another priority? I will need to remember to update also this menu, please loop the proprity values to dinamically get them
-         /* TEST System.out.println("Select priority:");
-         System.out.println("1 -LOW");
-         System.out.println("2 -MEDIUM");
-         System.out.println("3 -HIGH");
-         System.out.println("4 -CRITICAL");
 
-         int priority;
-         Priority selectedPriority = null;
+        //  TODO: what about adding a property to the enum that will represent the cases?
+        //    for example: priority value and you get the "LOW, MEDIUM" and so on via 1,2,3 ecc...
 
-         do {
-             try {
-                 priority = Integer.parseInt(scanner.nextLine());
-             } catch (NumberFormatException e) {
-                 System.out.println("Invalid input. Please enter a number.");
-                 priority = 0;
-             }
-
-          TODO: what about adding a property to the enum that will represent the cases?
-            for example: priority value and you get the "LOW, MEDIUM" and so on via 1,2,3 ecc...
-
-
-
-         switch (priority){
-             case 1:
-                 selectedPriority = Priority.LOW;
-                 break;
-             case 2:
-                 selectedPriority = Priority.MEDIUM;
-                 break;
-             case 3:
-                 selectedPriority = Priority.HIGH;
-                 break;
-             case 4:
-                 selectedPriority = Priority.CRITICAL;
-                 break;
-
-             default:
-                 System.out.println("Invalid choice, try again!\n");
-
-         }
-
-         }while (priority < 1 || priority > 4);
-*/
 
          Priority selectedPriority  = askForPriority();
 
@@ -363,9 +324,9 @@ public class IncidentCLI {
                 // UPDATE  DESCRIPTION
                 case 2:
 
-                    System.out.println("Update description:");
-                    String newDescription = scanner.nextLine();
-                    incident.setDescription(newDescription);
+                        System.out.println("Update description:");
+                        String newDescription = scanner.nextLine();
+                        incident.setDescription(newDescription);
 
                     break;
 
@@ -375,13 +336,18 @@ public class IncidentCLI {
                     IncidentStatus selectedStatus = askUpdateStatus();
 
                     if (selectedStatus != null) {
-                        incident.setStatus(selectedStatus);
+                        try {
+                            incident.setStatus(selectedStatus);
+                        } catch (IllegalStateException e) {
+                            System.out.println("Error: " + e.getMessage());
+                            skipUpdate = true;
+                        }
                     } else {
                         System.out.println("Status update cancelled");
                         skipUpdate = true;
                     }
 
-              // DONE -- MOVED TO IncidentService --  this kind of stuff, are NOT related to display element, this is business logic!
+              // DONE -- MOVED TO SetStatus --  this kind of stuff, are NOT related to display element, this is business logic!
                     break;
 
                 // UPDATE PRIORITY
@@ -487,6 +453,7 @@ public class IncidentCLI {
                             updateChoiceInput = 8;
                         } catch (IllegalArgumentException e) {
                             System.out.println("Error: " + e.getMessage());
+                            skipUpdate = true;
                         }
                     }else{
 
@@ -520,7 +487,6 @@ public class IncidentCLI {
             System.out.println("No incident found");
 
         }
-
 
     }
 
@@ -667,8 +633,5 @@ public class IncidentCLI {
 
 
      }
-
-
-
 
 }

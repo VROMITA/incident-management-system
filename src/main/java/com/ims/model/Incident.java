@@ -94,7 +94,14 @@ endDate     → LocalDateTime
     }
 
     public void setStatus(IncidentStatus status) {
+
+        if (status == IncidentStatus.ASSIGNED &&
+                (this.assignedTo == null || this.assignedTo.isEmpty())) {
+            throw new IllegalStateException("Cannot set status to ASSIGNED without assignee");
+        }
+
         this.status = status;
+
     }
 
     public void setPriority(Priority priority) {
