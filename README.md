@@ -46,17 +46,28 @@ This project was built to deeply understand Java core concepts **without framewo
 
 ## 🏗️ Architecture
 
-┌──────────────────────────────────────┐
-│  CLI Layer (IncidentCLI, ReportCLI)  │  ← User interaction
-├──────────────────────────────────────┤
-│  Service Layer (IncidentService)     │  ← Business logic
-├──────────────────────────────────────┤
-│  Repository Layer (IncidentRepo)     │  ← Data access
-├──────────────────────────────────────┤
-│  Database (SQLite)                   │  ← Persistence
-└──────────────────────────────────────┘
+**Layered Design** - Clear separation of concerns across 4 layers:
 
-Main
+**CLI Layer** (User Interface)
+- `IncidentCLI.java` - Main menu and incident operations
+- `ReportCLI.java` - Reporting interface
+
+**Service Layer** (Business Logic)
+- `IncidentService.java` - CRUD operations and business rules
+- `SlaMonitor.java` - SLA calculations and monitoring
+
+**Repository Layer** (Data Access)
+- `IncidentRepository.java` - Database operations with JDBC
+- `DatabaseManager.java` - Connection management
+
+**Database Layer** (Persistence)
+- `incidents.db` - SQLite database
+
+**Domain Model**
+- `Incident.java` - Main entity
+- `Priority.java` - Enum with SLA hours (CRITICAL=4h, HIGH=12h, MEDIUM=24h, LOW=48h)
+- `IncidentStatus.java` - Lifecycle states (NEW, ASSIGNED, INVESTIGATING, IN_PROGRESS, CLOSED, REOPENED)
+- `IncidentSource.java` - Origin tracking (USER_REPORT, INTERNAL_TEAM)
 
 **Packages:**
 - `model` - Domain entities (Incident, Priority, IncidentStatus, IncidentSource)
