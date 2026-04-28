@@ -92,7 +92,7 @@ mvn clean compile exec:java
 - ✅ **v2.0** — SLA Monitoring
 - ✅ **v2.1** — Validation + Logging + Javadoc
 - ✅ **v3.0** — Reporting - incident statistics, date range filters, validation
-- 🔄 **v3.1** — Code Quality Refactor - apply Single Responsibility Principle across service and repository layers
+- ✅ **v3.1** — Code Quality Refactor - apply Single Responsibility Principle across service and repository layers
 - 🚀 **v4.0** — Spring Boot REST API + PostgreSQL
 - 💬 **v3.5** — Comment System
 
