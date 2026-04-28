@@ -34,32 +34,6 @@ The project follows a layered architecture:
 
 ## Features
 
-### v1.0 - CLI Core
-- Create a new incident
-- View all incidents
-- Find an incident by ID
-- Delete an incident
-- Update an incident (title, description, status, priority, source, assigned to)
-- Close an incident with business validation
-- Persistent storage via SQLite (embedded, zero configuration)
-
-### v2.0 - SLA Monitor
-- Automatic SLA deadline calculation based on priority
-- SLA status classification on incident retrieval (OK / AT RISK / BREACH)
-- SLA status report from CLI
-
-### v2.1 - Validation + Logging
-- Input validation on all numeric inputs (NumberFormatException handling)
-- Empty title validation with loop in create and update
-- Operational logging via java.util.logging (INFO, WARNING)
-- Javadoc on all public methods (Service, Repository, SlaMonitor)
-
-### v3.0 - Reporting
-- Incident volume breakdown by status and priority
-- Average resolution time calculation
-- Incidents by date range with input validation
-- Business logic validation (start date cannot be after end date)
-
 ### v3.1 - Stream API & Performance
 
 **Key Changes:**
@@ -72,6 +46,33 @@ The project follows a layered architecture:
 - Stream API with `Collectors.groupingBy()`
 - Method references (`slaMonitor::classify`)
 - EnumMap optimization
+
+### v3.0 - Reporting
+- Incident volume breakdown by status and priority
+- Average resolution time calculation
+- Incidents by date range with input validation
+- Business logic validation (start date cannot be after end date)
+
+### v2.1 - Validation + Logging
+- Input validation on all numeric inputs (NumberFormatException handling)
+- Empty title validation with loop in create and update
+- Operational logging via java.util.logging (INFO, WARNING)
+- Javadoc on all public methods (Service, Repository, SlaMonitor)
+
+### v2.0 - SLA Monitor
+- Automatic SLA deadline calculation based on priority
+- SLA status classification on incident retrieval (OK / AT RISK / BREACH)
+- SLA status report from CLI
+
+### v1.0 - CLI Core
+- Create a new incident
+- View all incidents
+- Find an incident by ID
+- Delete an incident
+- Update an incident (title, description, status, priority, source, assigned to)
+- Close an incident with business validation
+- Persistent storage via SQLite (embedded, zero configuration)
+
 
 ## Getting Started
 
@@ -94,7 +95,7 @@ mvn clean compile exec:java
 - ✅ **v3.0** — Reporting - incident statistics, date range filters, validation
 - ✅ **v3.1** — Code Quality Refactor - apply Single Responsibility Principle across service and repository layers
 - 🚀 **v4.0** — Spring Boot REST API + PostgreSQL
-- 💬 **v3.5** — Comment System
+- 💬 **v4.5** — Comment System
 
 ## Architecture
 
