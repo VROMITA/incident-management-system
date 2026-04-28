@@ -2,7 +2,7 @@ package com.ims.model;
 
 import java.time.LocalDateTime;
 
-// TODO: suggestion: use lombok (import library via maven, it will be used to generate getter, setter, constructor and so on, avoiding boilerplate code)
+// DONE won't do : suggestion: use lombok (import library via maven, it will be used to generate getter, setter, constructor and so on, avoiding boilerplate code)
 public class Incident {
 
     /*
@@ -94,7 +94,14 @@ endDate     → LocalDateTime
     }
 
     public void setStatus(IncidentStatus status) {
+
+        if (status == IncidentStatus.ASSIGNED &&
+                (this.assignedTo == null || this.assignedTo.isEmpty())) {
+            throw new IllegalStateException("Cannot set status to ASSIGNED without assignee");
+        }
+
         this.status = status;
+
     }
 
     public void setPriority(Priority priority) {
@@ -129,9 +136,14 @@ endDate     → LocalDateTime
 
     @Override
     public String toString() {
-        return "[" + id + "] " + title + " | " +
-                status + " | " + priority + " | " +
-                startDate + " | " + endDate;
+
+        return "[" + id + "] " + title +
+                " | Status: " + status +
+                " | Priority: " + priority +
+                " | Assigned: " + assignedTo +
+                " | Start date: " + startDate +
+                " | End date: " + endDate;
+
     }
 }
 

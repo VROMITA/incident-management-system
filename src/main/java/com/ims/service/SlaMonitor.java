@@ -15,7 +15,7 @@ public class SlaMonitor {
      * @param incident the Incident that has to be classified
      * @return the classification of the incident
      */
-    // TODO: refactor this method after refactoring the SlaPolicy class
+    // DONE: refactor this method after refactoring the SlaPolicy class
     public SlaStatus classify(Incident incident){
 
           // CHECK if incident is close
@@ -35,7 +35,7 @@ public class SlaMonitor {
 
           return SlaStatus.AT_RISK;
           // CHECK if it due in less than 6 hours
-      } else if (hoursLeft < SlaPolicy.AT_RISK_THRESHOLD) {
+      } else if (hoursLeft < Priority.AT_RISK_THRESHOLD) {
 
           return SlaStatus.AT_RISK;
 
