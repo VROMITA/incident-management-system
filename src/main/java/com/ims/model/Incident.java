@@ -2,7 +2,7 @@ package com.ims.model;
 
 import java.time.LocalDateTime;
 
-// TODO: suggestion: use lombok (import library via maven, it will be used to generate getter, setter, constructor and so on, avoiding boilerplate code)
+// DONE won't do : suggestion: use lombok (import library via maven, it will be used to generate getter, setter, constructor and so on, avoiding boilerplate code)
 public class Incident {
 
     /*

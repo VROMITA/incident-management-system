@@ -7,6 +7,7 @@ import org.sqlite.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class IncidentService {
 
@@ -135,32 +136,35 @@ public class IncidentService {
     }
 
     /**
-     * Checks the SLA status of all open incidents and classifies them
-     * as BREACH, AT_RISK or OK based on their deadline and priority.
-     *
-     * @return a Map with SlaStatus as key and the list of incidents for each status
+            * Checks the SLA status of all open incidents and classifies them
+            * as BREACH, AT_RISK or OK based on their deadline and priority.
+            * Uses Stream API with groupingBy to efficiently categorize incidents,
+            * and EnumMap for optimized enum-keyed storage.
+            *
+            * @return an EnumMap with SlaStatus as key and the list of incidents for each status
      */
-    // TODO: I do not like this approach, use a class that have the three list instead of a map OR
+    // Done: I do not like this approach, use a class that have the three list instead of a map OR
     // use an EnumMap when working with enum and use java stream api to collect/group the item
+
     public Map<SlaStatus, List<Incident>> checkSlaStatus() {
         logger.info("SLA status check executed");
-        // Create 3 Empty List with the assigned status
-        Map<SlaStatus, List<Incident>> result = new HashMap<>();
-        result.put(SlaStatus.BREACH, new ArrayList<>());
-        result.put(SlaStatus.AT_RISK, new ArrayList<>());
-        result.put(SlaStatus.OK, new ArrayList<>());
 
-        List<Incident> allIncident = repository.findAll();
+        List<Incident> allIncidents = repository.findAll();
 
-        // iterate through all the incident - classify them and assign to the correct ArrayList
-        for(Incident incident : allIncident ){
+        // Group incidents by SLA status using Stream API
+        // - stream(): converts list to stream for processing
+        // - collect(): terminal operation to gather results
+        // - groupingBy(): groups incidents by classification
+        // - slaMonitor::classify: determines SLA status for each incident
+        // - EnumMap: optimized map implementation for enum keys
+        // - toList(): collects incidents into lists for each status
 
-            SlaStatus status = slaMonitor.classify(incident);
-            result.get(status).add(incident);
-
-        }
-
-        return result;
+        return allIncidents.stream()
+                .collect(Collectors.groupingBy(
+                        slaMonitor::classify,
+                        () -> new EnumMap<>(SlaStatus.class),
+                        Collectors.toList()
+                ));
 
     }
 
