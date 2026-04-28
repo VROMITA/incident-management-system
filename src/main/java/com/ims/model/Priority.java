@@ -10,6 +10,7 @@ public enum Priority {
     private final long slaHours;
     private final int menuOrder;
     private final String displayName;
+    public static final long AT_RISK_THRESHOLD = 6;
 
     Priority(long slaHours, int menuOrder, String displayName){
         this.slaHours=slaHours;

@@ -4,8 +4,6 @@ import com.ims.model.Incident;
 import com.ims.model.IncidentSource;
 import com.ims.model.IncidentStatus;
 import com.ims.model.Priority;
-
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;

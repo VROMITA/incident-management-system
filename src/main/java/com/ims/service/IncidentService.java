@@ -35,22 +35,17 @@ public class IncidentService {
         }
 
         Incident incident = new Incident(title, priority, source);
-
-        //TODO: it seems that it is returning the same "level" why do not set them as a value of an enum?
-        long hours = switch (priority) {
-            case CRITICAL -> SlaPolicy.CRITICAL;
-            case HIGH -> SlaPolicy.HIGH;
-            case MEDIUM -> SlaPolicy.MEDIUM;
-            case LOW -> SlaPolicy.LOW;
-        };
-
-        incident.setSlaDeadline(incident.getStartDate().plusHours(hours));
+        incident.setSlaDeadline(incident.getStartDate().plusHours(priority.getSlaHours()));
 
         repository.save(incident);
         logger.info("Incident created: ID=" + incident.getId() + " | " + incident.getTitle() + " | " + priority);
 
         return incident;
     }
+
+
+        //Done getIncident Removed : it seems that it is returning the same "level" why do not set them as a value of an enum?
+
 
     /**
      * The output is a list of the all incidents
@@ -72,7 +67,7 @@ public class IncidentService {
     }
 
     /**
-     * It close the incident with validation
+     * It closes the incident with validation
      * @param id The incident ID that the user wants to close
      */
     public void closeIncident(int id) {
@@ -113,8 +108,7 @@ public class IncidentService {
             throw new IllegalArgumentException("Incident not found");
         }
 
-        // TODO not used
-        Incident incident = optional.get();
+        //Done line deleted -  not used
 
         if (repository.deleteIncident(id)) {
 

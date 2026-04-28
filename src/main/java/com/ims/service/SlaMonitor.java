@@ -35,7 +35,7 @@ public class SlaMonitor {
 
           return SlaStatus.AT_RISK;
           // CHECK if it due in less than 6 hours
-      } else if (hoursLeft < SlaPolicy.AT_RISK_THRESHOLD) {
+      } else if (hoursLeft < Priority.AT_RISK_THRESHOLD) {
 
           return SlaStatus.AT_RISK;
 
