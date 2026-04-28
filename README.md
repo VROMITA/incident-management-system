@@ -46,35 +46,24 @@ This project was built to deeply understand Java core concepts **without framewo
 
 ## 🏗️ Architecture
 
-┌─────────────┐
-│    Main     │  Entry point
-└──────┬──────┘
-│
-┌───▼────────────┐
-│  IncidentCLI   │  User interface layer
-│   ReportCLI    │
-└───┬────────────┘
-│
-┌───▼──────────────┐
-│ IncidentService  │  Business logic layer
-│   SlaMonitor     │
-└───┬──────────────┘
-│
-┌───▼────────────────┐
-│ IncidentRepository │  Data access layer
-└───┬────────────────┘
-│
-┌───▼──────────┐
-│   SQLite     │  Database
-└──────────────┘
+┌──────────────────────────────────────┐
+│  CLI Layer (IncidentCLI, ReportCLI)  │  ← User interaction
+├──────────────────────────────────────┤
+│  Service Layer (IncidentService)     │  ← Business logic
+├──────────────────────────────────────┤
+│  Repository Layer (IncidentRepo)     │  ← Data access
+├──────────────────────────────────────┤
+│  Database (SQLite)                   │  ← Persistence
+└──────────────────────────────────────┘
+
+Main
 
 **Packages:**
 - `model` - Domain entities (Incident, Priority, IncidentStatus, IncidentSource)
 - `service` - Business logic (IncidentService, SlaMonitor)
 - `repository` - Database operations (IncidentRepository)
 - `cli` - User interface (IncidentCLI, ReportCLI)
-- `util` - Utilities (DatabaseManager)
-
+  
 ---
 
 ## 🚀 Quick Start
