@@ -5,104 +5,178 @@
 ![Release](https://img.shields.io/github/v/release/VROMITA/incident-management-system)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-A Java Incident Management System that translates years of enterprise support experience into code.
-Built in progressive milestones, mastering JDBC and layered architecture fundamentals
-before abstracting them with Spring Boot.
+# 🎫 Incident Management System - CLI Version
 
-## Background
+> **Final Version: v3.1**  
+> A command-line incident management system built to master Java fundamentals before frameworks.
 
-Built by a professional with multiple years of hands-on L1/L2/L3 support
-experience in an enterprise IoT environment, using Jira and Salesforce
-daily. The domain model and workflows (SLA monitoring, incident
-escalation, closing comments) come from real support processes, not
-textbook examples.
+---
 
-## Technologies
+## 🎯 Project Purpose
 
-- **Java 21 LTS** — Core language
-- **Maven 3.9** — Build automation and dependency management
-- **SQLite via JDBC** — Embedded database (manual connection management)
+This project was built to deeply understand Java core concepts **without framework magic**:
+- Manual JDBC connection management (no Spring Data JPA)
+- Database schema design and SQL
+- Enum behavioral patterns
+- Business logic implementation
+- Try-with-resources and proper resource handling
 
-## Architecture
+**Next evolution:** Professional REST API version with Spring Boot (separate repository)
 
-The project follows a layered architecture:
+---
 
-- **Model** - domain objects (Incident, enums)
-- **Repository** - database layer, handles all SQLite operations via JDBC
-- **Service** - business logic and validation rules
-- **CLI** - interactive command-line interface for user interaction
+## ✨ Features
 
-## Features
+### Core Functionality
+- ✅ **CRUD Operations** - Create, Read, Update, Delete incidents
+- ✅ **Priority System** - CRITICAL (4h) / HIGH (12h) / MEDIUM (24h) / LOW (48h) SLA
+- ✅ **Status Lifecycle** - NEW → ASSIGNED → INVESTIGATING → IN_PROGRESS → CLOSED
+- ✅ **Source Tracking** - USER_REPORT vs INTERNAL_TEAM
+- ✅ **SLA Monitoring** - Auto-calculation with at-risk detection
 
-### v3.1 - Stream API & Performance
+### Advanced Features  
+- 📊 **Reporting System** - Incidents by status/priority with Stream API
+- 🔍 **Dynamic Menus** - Enum-driven UI with `Enum.values()`
+- ⚡ **Performance** - EnumMap optimization for enum-keyed collections
+- ✅ **Validation** - Input validation with proper error handling
+- 📝 **Logging** - java.util.logging integration
+- 📚 **Documentation** - Full Javadoc coverage
 
-**Key Changes:**
-- Implemented Stream API in `checkSlaStatus()`
-- Replaced HashMap with EnumMap for enum-keyed collections
-- Removed `SlaPolicy` class, centralized constants in `Priority` enum
-- Simplified `createIncident()` method
+---
 
-**Technical:**
-- Stream API with `Collectors.groupingBy()`
-- Method references (`slaMonitor::classify`)
-- EnumMap optimization
+## 🏗️ Architecture
 
-### v3.0 - Reporting
-- Incident volume breakdown by status and priority
-- Average resolution time calculation
-- Incidents by date range with input validation
-- Business logic validation (start date cannot be after end date)
+┌─────────────┐
+│    Main     │  Entry point
+└──────┬──────┘
+│
+┌───▼────────────┐
+│  IncidentCLI   │  User interface layer
+│   ReportCLI    │
+└───┬────────────┘
+│
+┌───▼──────────────┐
+│ IncidentService  │  Business logic layer
+│   SlaMonitor     │
+└───┬──────────────┘
+│
+┌───▼────────────────┐
+│ IncidentRepository │  Data access layer
+└───┬────────────────┘
+│
+┌───▼──────────┐
+│   SQLite     │  Database
+└──────────────┘
 
-### v2.1 - Validation + Logging
-- Input validation on all numeric inputs (NumberFormatException handling)
-- Empty title validation with loop in create and update
-- Operational logging via java.util.logging (INFO, WARNING)
-- Javadoc on all public methods (Service, Repository, SlaMonitor)
+**Packages:**
+- `model` - Domain entities (Incident, Priority, IncidentStatus, IncidentSource)
+- `service` - Business logic (IncidentService, SlaMonitor)
+- `repository` - Database operations (IncidentRepository)
+- `cli` - User interface (IncidentCLI, ReportCLI)
+- `util` - Utilities (DatabaseManager)
 
-### v2.0 - SLA Monitor
-- Automatic SLA deadline calculation based on priority
-- SLA status classification on incident retrieval (OK / AT RISK / BREACH)
-- SLA status report from CLI
+---
 
-### v1.0 - CLI Core
-- Create a new incident
-- View all incidents
-- Find an incident by ID
-- Delete an incident
-- Update an incident (title, description, status, priority, source, assigned to)
-- Close an incident with business validation
-- Persistent storage via SQLite (embedded, zero configuration)
-
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 - Java 21 or higher
-- Maven 3.9+
+- Maven 3.8+
 
-### Run
+### Installation
+
+1. Clone the repository:
 ```bash
-mvn clean compile exec:java
+git clone https://github.com/VROMITA/incident-management-system.git
+cd incident-management-system
 ```
 
-> No database configuration needed, SQLite is embedded.
+2. Build the project:
+```bash
+mvn clean install
+```
 
-## Roadmap
+3. Run the application:
+```bash
+mvn exec:java
+```
 
-- ✅ **v1.0** — CLI Core
-- ✅ **v2.0** — SLA Monitoring
-- ✅ **v2.1** — Validation + Logging + Javadoc
-- ✅ **v3.0** — Reporting - incident statistics, date range filters, validation
-- ✅ **v3.1** — Code Quality Refactor - apply Single Responsibility Principle across service and repository layers
-- 🚀 **v4.0** — Spring Boot REST API + PostgreSQL
-- 💬 **v4.5** — Comment System
+The database (`incidents.db`) is created automatically on first run.
 
-## Architecture
+---
 
-Layered architecture with clear separation of concerns. The CLI is a temporary presentation layer, in v4.0 it will be replaced by REST endpoints without touching the service or repository layers.
+## 📚 What I Learned
 
-## About
+### JDBC & Database
+- `Connection`, `PreparedStatement`, `ResultSet` lifecycle
+- SQL injection prevention with parameterized queries
+- Try-with-resources for automatic resource cleanup
+- Transaction management concepts
+- Connection leak detection and prevention
 
-Built by **Valerio Romita** — Application Support Specialist transitioning to Java Backend Development.
+### Java Core
+- Enum behavioral patterns (methods and properties in enums)
+- `Optional<T>` for null safety
+- Stream API (`groupingBy`, `Collectors`)
+- `EnumMap` for type-safe enum-keyed maps
+- Method references (`Priority::getSlaHours`)
 
-💼 [LinkedIn](https://www.linkedin.com/in/valerio-romita)
+### Software Engineering
+- Single Responsibility Principle (SRP)
+- Separation of concerns (layers)
+- Git branching strategy (master/develop/feature)
+- Semantic versioning
+- Professional commit messages
+
+### Real-World Context
+Based on enterprise support experience with:
+- Jira incident workflows
+- Salesforce case management  
+- L1/L2/L3 support escalation
+- SLA monitoring and alerting
+
+---
+
+## 📊 Project Evolution
+
+| Version | Focus | Status |
+|---------|-------|--------|
+| v1.0 | CLI + JDBC CRUD | ✅ Released |
+| v2.0 | SLA Monitoring | ✅ Released |
+| v2.1 | Validation + Logging + Javadoc | ✅ Released |
+| v3.0 | Reporting System | ✅ Released |
+| v3.1 | Refactoring + Stream API | ✅ Released (Final) |
+
+---
+
+## 🔜 Next Steps
+
+This CLI version is **complete and production-ready** for its scope.
+
+**Next evolution:** Professional REST API built with:
+- Spring Boot
+- PostgreSQL  
+- JPA/Hibernate
+- REST endpoints
+- Docker deployment
+
+Repository: _(will be linked when created)_
+
+---
+
+## 👨‍💻 Author
+
+**Valerio Romita**  
+Building Java expertise from fundamentals to enterprise frameworks.
+
+[GitHub](https://github.com/VROMITA) | [LinkedIn](https://www.linkedin.com/in/valerio-romita)
+
+---
+
+## 📄 License
+
+This project is for portfolio and educational purposes.
+
+---
+
+**Built with ☕ and determination to understand Java deeply before using frameworks.**
