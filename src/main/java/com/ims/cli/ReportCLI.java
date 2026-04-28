@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-// TODO: in general, same stuff as the IncidentCLI
 public class ReportCLI {
 
     private final Scanner scanner = new Scanner(System.in);

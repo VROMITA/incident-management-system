@@ -10,29 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
-/* TODO: in general classes should be at max of 300 rows for best practice, refactor this class to obtain this result, but since you will switch to
- spring boot app, is ok. */
-/*
-    TODO: in general this class is named CLI but is not doing only that, for example the method updateIncident() is doing a lot of stuff and it is too long
-    consider creating separate service for the logic, bcause method should be max 30 rows long.
-    also, since it is doing a lot of different stuff, consider creating a method for each of them
- */
-
-/*
-TODO: in general this class is breaking the SRP principle (single responsability principle) because it does not do one single thing, but:
-    1) input handling (Scanner)
-    2) business logic (validations, SLA logic, updates)
-    3) formatting/output
-    4) orchestration
-    also, in the menu display, you are hardcoding the options "1, 2,3 " ecc... think about using an enum selector class
-  */
 public class IncidentCLI {
      private final Scanner scanner = new Scanner(System.in); // TODO: avoid using/creating Scanner for both ReportCLI and IncidentCLI
 
-    /*
-       TODO: in general, do not create service classes like this = new Service() but prefer using the singleton design pattern (same for other service classes) focusing on DI (dependency injection principle)
-       p.s. you will see this a lot in spring/spring boot application
-     */
     private final IncidentService service = new IncidentService();
 
      private final ReportCLI reportCLI = new ReportCLI();
@@ -126,11 +106,6 @@ public class IncidentCLI {
              }
          } while (title.isBlank());
 
-         // Priority //DONE: what if I add another priority? I will need to remember to update also this menu, please loop the proprity values to dinamically get them
-
-        //  DONE: what about adding a property to the enum that will represent the cases?
-        //    for example: priority value and you get the "LOW, MEDIUM" and so on via 1,2,3 ecc...
-
         // Select priority
          Priority selectedPriority  = askForPriority();
 
@@ -146,7 +121,6 @@ public class IncidentCLI {
      private void listAllIncidents(){
          List<Incident> incidents = service.allIncidents();
 
-         // ✅ DONE: why not use the .toString inside incident? or even better creating a displayservice for incident?
          for (Incident incident :
               incidents) {
              System.out.println(incident.toString());
@@ -168,7 +142,6 @@ public class IncidentCLI {
 
           Optional<Incident> incidents = service.getIncidentById(typedInt);
 
-            // DONE WON'T DO CLI will be removed in 4.0 : please keep an eye on duplicated stuff, we should avoid them to follow the DRY principle
           if (incidents.isPresent()){
 
               Incident incident = incidents.get();
@@ -218,14 +191,11 @@ public class IncidentCLI {
                   System.out.println("Deletion process cancelled");
               }
 
-
-            // DONE: use always parentheses, even for one line code (good practice)
           }else{
 
               System.out.println("Incident does not exist");
 
           }
-
 
       }
 
@@ -320,7 +290,6 @@ public class IncidentCLI {
                         skipUpdate = true;
                     }
 
-              // DONE -- MOVED TO SetStatus --  this kind of stuff, are NOT related to display element, this is business logic!
                     break;
 
                 // UPDATE PRIORITY

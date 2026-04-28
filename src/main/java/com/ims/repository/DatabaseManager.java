@@ -4,10 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/* DONE:
- the singleton here doesn’t add value because the class is stateless and creates a new connection every time.
- you could simplify this by removing the singleton or move toward dependency injection.
- */
 
 /**
  * Utility class for database connection management.
@@ -15,7 +11,6 @@ import java.sql.SQLException;
  */
 public class DatabaseManager {
 
-    // DONE in Spring: in general you will see, specially in spring boot, that this kind of info should be stored in properties/env file to avoid exposing sensitive data inside the code directly
     private static final String DB_URL = "jdbc:sqlite:incidents.db";
 
     // Private constructor to prevent instantiation
@@ -23,7 +18,6 @@ public class DatabaseManager {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
 
-    // DONE: this is the singleton pattern
     /**
      * Returns a new database connection.
      * Note: Caller is responsible for closing the connection.

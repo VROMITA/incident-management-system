@@ -60,6 +60,19 @@ The project follows a layered architecture:
 - Incidents by date range with input validation
 - Business logic validation (start date cannot be after end date)
 
+### v3.1 - Stream API & Performance
+
+**Key Changes:**
+- Implemented Stream API in `checkSlaStatus()`
+- Replaced HashMap with EnumMap for enum-keyed collections
+- Removed `SlaPolicy` class, centralized constants in `Priority` enum
+- Simplified `createIncident()` method
+
+**Technical:**
+- Stream API with `Collectors.groupingBy()`
+- Method references (`slaMonitor::classify`)
+- EnumMap optimization
+
 ## Getting Started
 
 ### Prerequisites
@@ -80,8 +93,8 @@ mvn clean compile exec:java
 - ✅ **v2.1** — Validation + Logging + Javadoc
 - ✅ **v3.0** — Reporting - incident statistics, date range filters, validation
 - 🔄 **v3.1** — Code Quality Refactor - apply Single Responsibility Principle across service and repository layers
-- 💬 **v3.5** — Comment System
 - 🚀 **v4.0** — Spring Boot REST API + PostgreSQL
+- 💬 **v3.5** — Comment System
 
 ## Architecture
 
