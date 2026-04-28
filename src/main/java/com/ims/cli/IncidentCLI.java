@@ -126,78 +126,16 @@ public class IncidentCLI {
              }
          } while (title.isBlank());
 
-         // Priority // TODO: what if I add another priority? I will need to remember to update also this menu, please loop the proprity values to dinamically get them
-         System.out.println("Select priority:");
-         System.out.println("1 -LOW");
-         System.out.println("2 -MEDIUM");
-         System.out.println("3 -HIGH");
-         System.out.println("4 -CRITICAL");
+         // Priority //DONE: what if I add another priority? I will need to remember to update also this menu, please loop the proprity values to dinamically get them
 
-         int priority;
-         Priority selectedPriority = null;
+        //  DONE: what about adding a property to the enum that will represent the cases?
+        //    for example: priority value and you get the "LOW, MEDIUM" and so on via 1,2,3 ecc...
 
-         do {
-             try {
-                 priority = Integer.parseInt(scanner.nextLine());
-             } catch (NumberFormatException e) {
-                 System.out.println("Invalid input. Please enter a number.");
-                 priority = 0;
-             }
+        // Select priority
+         Priority selectedPriority  = askForPriority();
 
-         /* TODO: what about adding a property to the enum that will represent the cases?
-            for example: priority value and you get the "LOW, MEDIUM" and so on via 1,2,3 ecc...
-          */
-         switch (priority){
-             case 1:
-                 selectedPriority = Priority.LOW;
-                 break;
-             case 2:
-                 selectedPriority = Priority.MEDIUM;
-                 break;
-             case 3:
-                 selectedPriority = Priority.HIGH;
-                 break;
-             case 4:
-                 selectedPriority = Priority.CRITICAL;
-                 break;
-
-             default:
-                 System.out.println("Invalid choice, try again!\n");
-
-         }
-
-         }while (priority < 1 || priority > 4);
-
-
-         // Source
-         System.out.println("Select the source: \n");
-         System.out.println("1 - USER_REPORT");
-         System.out.println("2 - INTERNAL_TEAM");
-
-         int source;
-         IncidentSource selectedSource = null;
-
-         do {
-
-             try {
-                 source = Integer.parseInt(scanner.nextLine());
-             } catch (NumberFormatException e) {
-                 System.out.println("Invalid input. Please enter a number.");
-                 source = 0;
-             }
-
-             // TODO: same thing as above
-             switch (source){
-                 case 1:
-                     selectedSource = IncidentSource.USER_REPORT;
-                     break;
-                 case 2:
-                     selectedSource = IncidentSource.INTERNAL_TEAM;
-                     break;
-                 default:
-                     System.out.println("Invalid source, try again \n");
-             }
-         }while (source <1 || source > 2);
+         // Select Source
+         IncidentSource selectedSource = askSource();
 
 
          Incident created = service.createIncident(title, selectedPriority , selectedSource);
@@ -208,7 +146,7 @@ public class IncidentCLI {
      private void listAllIncidents(){
          List<Incident> incidents = service.allIncidents();
 
-         // TODO: why not use the .toString inside incident? or even better creating a displayservice for incident?
+         // ✅ DONE: why not use the .toString inside incident? or even better creating a displayservice for incident?
          for (Incident incident :
               incidents) {
              System.out.println(incident.toString());
@@ -230,7 +168,7 @@ public class IncidentCLI {
 
           Optional<Incident> incidents = service.getIncidentById(typedInt);
 
-            // TODO: please keep an eye on duplicated stuff, we should avoid them to follow the DRY principle
+            // DONE WON'T DO CLI will be removed in 4.0 : please keep an eye on duplicated stuff, we should avoid them to follow the DRY principle
           if (incidents.isPresent()){
 
               Incident incident = incidents.get();
@@ -240,10 +178,13 @@ public class IncidentCLI {
               System.out.println("Assigned to: " + incident.getAssignedTo() + " | Start date: " + incident.getStartDate() + " | End Date: " + incident.getEndDate());
               System.out.println("Description \n" + incident.getDescription());
 
-          }else
-              System.out.println("Incident not found");
-      }
+          }else{
 
+              System.out.println("Incident not found");
+
+          }
+
+      }
 
       private void deleteIncidentById(){
 
@@ -272,12 +213,19 @@ public class IncidentCLI {
               if(deletionInput.equals("y")){
                   service.deleteIncident(typedInt);
                   System.out.println("Incident " + incident.getId() + " Cancelled");
-              }else
-                  System.out.println("Deletion process cancelled");
+              }else{
 
-            // TODO: use always parentheses, even for one line code (good practice)
-          }else
+                  System.out.println("Deletion process cancelled");
+              }
+
+
+            // DONE: use always parentheses, even for one line code (good practice)
+          }else{
+
               System.out.println("Incident does not exist");
+
+          }
+
 
       }
 
@@ -349,112 +297,36 @@ public class IncidentCLI {
                 // UPDATE  DESCRIPTION
                 case 2:
 
-                    System.out.println("Update description:");
-                    String newDescription = scanner.nextLine();
-                    incident.setDescription(newDescription);
+                        System.out.println("Update description:");
+                        String newDescription = scanner.nextLine();
+                        incident.setDescription(newDescription);
 
                     break;
 
                 // UPDATE STATUS
                 case 3:
 
-                    System.out.println("Update status:");
-                    System.out.println("1 - ASSIGNED");
-                    System.out.println("2 - ESCALATED");
-                    System.out.println("3 - IN PROGRESS");
-                    System.out.println("4 - TESTING");
-                    System.out.println("5 - REOPENED");
-                    System.out.println("6 - Exit");
+                    IncidentStatus selectedStatus = askUpdateStatus();
 
-                    int status;
-                    IncidentStatus selectedNewStatus = null;
-
-                    do {
-
+                    if (selectedStatus != null) {
                         try {
-                            status = Integer.parseInt(scanner.nextLine());
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter a number.");
-                            status = 0;
+                            incident.setStatus(selectedStatus);
+                        } catch (IllegalStateException e) {
+                            System.out.println("Error: " + e.getMessage());
+                            skipUpdate = true;
                         }
+                    } else {
+                        System.out.println("Status update cancelled");
+                        skipUpdate = true;
+                    }
 
-                        switch (status){
-                            case 1:
-                                selectedNewStatus = IncidentStatus.ASSIGNED;
-
-                                // TODO: this kind of stuff, are NOT related to display element, this is business logic
-                                if (incident.getAssignedTo() == null || incident.getAssignedTo().isEmpty()) {
-
-                                    System.out.println("PLEASE CHANGE ASSIGNED PERSON!");
-                                }
-
-                                break;
-                            case 2:
-                                selectedNewStatus = IncidentStatus.ESCALATED;
-                                break;
-                            case 3:
-                                selectedNewStatus = IncidentStatus.IN_PROGRESS;
-                                break;
-                            case 4:
-                                selectedNewStatus = IncidentStatus.TESTING;
-                                break;
-                            case 5:
-                                selectedNewStatus = IncidentStatus.REOPENED;
-                                break;
-                            case 6:
-                                break;
-                            default:
-                                System.out.println("Invalid choice, try again!\n");
-
-                        }
-
-                    }while (status < 1 || status > 6);
-
-                    incident.setStatus(selectedNewStatus);
-
+              // DONE -- MOVED TO SetStatus --  this kind of stuff, are NOT related to display element, this is business logic!
                     break;
 
                 // UPDATE PRIORITY
                 case 4:
 
-                    System.out.println("Update priority:");
-                    System.out.println("1 -LOW");
-                    System.out.println("2 -MEDIUM");
-                    System.out.println("3 -HIGH");
-                    System.out.println("4 -CRITICAL");
-
-                    int priority;
-                    Priority selectedNewPriority = null;
-
-                    do {
-                            try {
-                                priority = Integer.parseInt(scanner.nextLine());
-                            } catch (NumberFormatException e) {
-                                System.out.println("Invalid input. Please enter a number.");
-                                priority = 0;
-                            }
-
-
-                        switch (priority){
-                            case 1:
-                                selectedNewPriority = Priority.LOW;
-                                break;
-                            case 2:
-                                selectedNewPriority = Priority.MEDIUM;
-                                break;
-                            case 3:
-                                selectedNewPriority = Priority.HIGH;
-                                break;
-                            case 4:
-                                selectedNewPriority = Priority.CRITICAL;
-                                break;
-                            default:
-                                System.out.println("Invalid choice, try again!\n");
-
-                        }
-
-                    }while (priority < 1 || priority > 4);
-
+                    Priority selectedNewPriority = askForPriority();
                     incident.setPriority(selectedNewPriority);
 
                     break;
@@ -462,34 +334,7 @@ public class IncidentCLI {
                     // UPDATE SOURCE
                 case 5:
 
-                    System.out.println("Update source: \n");
-                    System.out.println("1 - USER_REPORT");
-                    System.out.println("2 - INTERNAL_TEAM");
-
-                    int source;
-                    IncidentSource selectedNewSource = null;
-
-                    do {
-
-                        try {
-                            source = Integer.parseInt(scanner.nextLine());
-                        } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter a number.");
-                            source = 0;
-                        }
-
-                        switch (source){
-                            case 1:
-                                selectedNewSource = IncidentSource.USER_REPORT;
-                                break;
-                            case 2:
-                                selectedNewSource = IncidentSource.INTERNAL_TEAM;
-                                break;
-                            default:
-                                System.out.println("Invalid source, try again \n");
-                        }
-                    }while (source < 1 || source > 2);
-
+                    IncidentSource selectedNewSource = askSource();
                     incident.setSource(selectedNewSource);
 
                     break;
@@ -517,9 +362,14 @@ public class IncidentCLI {
                             updateChoiceInput = 8;
                         } catch (IllegalArgumentException e) {
                             System.out.println("Error: " + e.getMessage());
+                            skipUpdate = true;
                         }
-                    }else
+                    }else{
+
                         System.out.println("Incident closure cancelled");
+
+                    }
+
 
                     break;
 
@@ -534,15 +384,138 @@ public class IncidentCLI {
 
             }
 
-            if(!skipUpdate)
+            if(!skipUpdate){
+
             service.updateIncident(incident);
+            }
 
             }while (updateChoiceInput !=8 );
 
-
-        }else
+        }else{
 
             System.out.println("No incident found");
+
+        }
+
+    }
+
+    public Priority askForPriority(){
+
+        System.out.println("Select priority:");
+
+        Priority[] priorities = Priority.values();
+
+       // Loop for priority options
+        for (Priority priority : priorities) {
+
+            System.out.println(priority.getMenuOrder() + " - " + priority.getDisplayName());
+
+        }
+
+
+
+        int choice = 0;
+        Priority selectedPriority = null;
+
+        do {
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+
+            }catch (NumberFormatException e){
+                System.out.println("Invalid input. Please try again");
+
+            }
+            if (choice >= 1 && choice <= priorities.length){
+                selectedPriority = priorities[choice-1];
+            }else{
+                System.out.println("Invalid choice, try again");
+            }
+
+        } while (selectedPriority == null);
+
+            return selectedPriority;
+
+    }
+
+    public IncidentStatus askUpdateStatus(){
+
+        System.out.println("Update status:");
+
+        IncidentStatus[] statusList = {
+                IncidentStatus.ASSIGNED,
+                IncidentStatus.ESCALATED,
+                IncidentStatus.IN_PROGRESS,
+                IncidentStatus.TESTING,
+                IncidentStatus.REOPENED
+        };
+
+        for(int i = 0; i < statusList.length; i++){
+
+            System.out.println((i+1) + " - " + statusList[i].getDisplayName());
+
+        }
+        System.out.println("6 - Exit");
+
+        int choice = 0;
+        IncidentStatus selectedStatus = null;
+
+        do {
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+
+            }catch (NumberFormatException e){
+
+                System.out.println("Invalid input. Please try again!");
+            }
+               if (choice == 6){
+                   return null;
+
+               } else if(choice >= 1 && choice <= 5) {
+
+                   selectedStatus = statusList[choice - 1];
+
+               }else {
+                   System.out.println("Invalid choice, try again");
+               }
+
+        } while (selectedStatus == null);
+
+        return selectedStatus;
+
+    }
+
+    public IncidentSource askSource(){
+
+        System.out.println("Select priority:");
+
+        IncidentSource[] sources = IncidentSource.values();
+
+        for(IncidentSource source : sources){
+            System.out.println(source.getMenuOrder() + " - " + source.getDisplayText());
+
+        }
+
+        int choice = 0;
+        IncidentSource selectedSource = null;
+
+        do {
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+
+            }catch (NumberFormatException e){
+                System.out.println("Invalid input. Please try again");
+
+            }
+            if (choice >= 1 && choice <= sources.length){
+                selectedSource = sources[choice-1];
+            }else{
+                System.out.println("Invalid choice, try again");
+            }
+
+        } while (selectedSource == null);
+
+        return selectedSource;
+
     }
 
     public void checkSlaStatus() {
@@ -571,7 +544,8 @@ public class IncidentCLI {
 
             System.out.println("No incidents at Risk status");
 
-        } else
+        } else{
+
             for (Incident incident : riskList) {
 
                 long hoursLeft = ChronoUnit.HOURS.between(LocalDateTime.now(), incident.getSlaDeadline());
@@ -580,12 +554,16 @@ public class IncidentCLI {
 
             }
 
+
+        }
+
+
         System.out.println("─────────────────────────────");
         System.out.println("\uD83D\uDD34 BREACH STATUS: ");
 
         if (breachList.isEmpty()) {
             System.out.println("No breach ");
-        } else
+        } else {
 
             for (Incident incident : breachList) {
 
@@ -593,7 +571,10 @@ public class IncidentCLI {
 
                 System.out.println("[" + incident.getId() + "] " + incident.getTitle() + " | overdue since " + Math.abs(hoursLeft) + " hours");
             }
-     }
 
+        }
+
+
+     }
 
 }

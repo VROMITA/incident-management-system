@@ -4,40 +4,38 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/* TODO:
+/* DONE:
  the singleton here doesn’t add value because the class is stateless and creates a new connection every time.
  you could simplify this by removing the singleton or move toward dependency injection.
  */
+
+/**
+ * Utility class for database connection management.
+ * Uses static methods since the class is stateless.
+ */
 public class DatabaseManager {
 
-    // TODO: in general you will see, specially in spring boot, that this kind of info should be stored in properties/env file to avoid exposing sensitive data inside the code directly
+    // DONE in Spring: in general you will see, specially in spring boot, that this kind of info should be stored in properties/env file to avoid exposing sensitive data inside the code directly
     private static final String DB_URL = "jdbc:sqlite:incidents.db";
-    private static DatabaseManager instance;
 
-
-    // private constructor -- open connection with the DB
-    private DatabaseManager(){
-
+    // Private constructor to prevent instantiation
+    private DatabaseManager() {
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
 
-
-    // getInstance
-    // TODO: this is the singleton pattern
-    public static DatabaseManager getInstance() {
-        if(instance == null){
-            instance = new DatabaseManager();
-        }
-        return instance;
-    }
-
-
-    // getConnection
-    public Connection getConnection() throws SQLException {
+    // DONE: this is the singleton pattern
+    /**
+     * Returns a new database connection.
+     * Note: Caller is responsible for closing the connection.
+     */
+    public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
     }
 
-    // create table method
-    public void createTable(){
+    /**
+     * Creates the incidents table if it doesn't exist.
+     */
+    public static void createTable(){
         String sql = """
                 CREATE TABLE IF NOT EXISTS incidents (
                  id          INTEGER PRIMARY KEY AUTOINCREMENT,
