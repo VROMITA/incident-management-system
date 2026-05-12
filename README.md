@@ -160,7 +160,7 @@ This CLI version is **complete and production-ready** for its scope.
 - REST endpoints
 - Docker deployment
 
-Repository: _(will be linked when created)_
+Repository: https://github.com/VROMITA/incident-management-system-spring
 
 ---
 
