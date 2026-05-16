@@ -176,7 +176,3 @@ Building Java expertise from fundamentals to enterprise frameworks.
 ## 📄 License
 
 This project is for portfolio and educational purposes.
-
----
-
-**Built with ☕ and determination to understand Java deeply before using frameworks.**
